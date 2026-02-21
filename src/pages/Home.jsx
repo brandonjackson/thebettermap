@@ -71,23 +71,48 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home-features">
-        <div className="home-feature">
-          <div className="home-feature-icon home-feature-icon--improve" />
-          <h3>Find something to fix</h3>
-          <p>Spot neglected spaces, broken infrastructure, and missed opportunities in your neighbourhood.</p>
-        </div>
-        <div className="home-feature">
-          <div className="home-feature-icon home-feature-icon--imagine" />
-          <h3>Imagine something new</h3>
-          <p>Drop a pin, describe your vision, and see what your neighbourhood could become.</p>
-        </div>
-        <div className="home-feature">
-          <div className="home-feature-icon home-feature-icon--celebrate" />
-          <h3>Local beauty</h3>
-          <p>Map the buildings, streets, and places that make your area special.</p>
+      <div className="home-manifesto">
+        <h2 className="home-manifesto-title">Britain has a collective imagination problem</h2>
+        <p className="home-manifesto-body">
+          We have endless ways to object. We have almost no way to say what we actually want.
+          Progress Map changes that. It's a shared canvas for picturing better — street by street,
+          neighbourhood by neighbourhood — and rallying people around that vision.
+        </p>
+      </div>
+
+      <div className="home-ways">
+        <h2 className="home-ways-title">Three ways to help</h2>
+        <div className="home-features">
+          <div className="home-feature">
+            <div className="home-feature-icon home-feature-icon--improve" />
+            <h3>Find something to fix</h3>
+            <p>Spot neglected spaces, broken infrastructure, and missed opportunities in your neighbourhood.</p>
+          </div>
+          <div className="home-feature">
+            <div className="home-feature-icon home-feature-icon--imagine" />
+            <h3>Imagine something new</h3>
+            <p>Drop a pin, describe your vision, and see what your neighbourhood could become.</p>
+          </div>
+          <div className="home-feature">
+            <div className="home-feature-icon home-feature-icon--celebrate" />
+            <h3>Record local beauty</h3>
+            <p>Map the buildings, streets, and places that make your area special.</p>
+          </div>
         </div>
       </div>
+
+      <div className="home-commons">
+        <h2 className="home-commons-title">Part of the digital commons</h2>
+        <p className="home-commons-body">
+          Progress Map isn't a startup. It's public infrastructure for collective ambition.
+          Inspired by the civic visionaries who imagined garden cities, public parks, and the
+          NHS — people who saw what Britain could be and made others see it too.
+        </p>
+      </div>
+
+      <footer className="home-footer">
+        <p>Progress Map — a shared map for a better Britain</p>
+      </footer>
     </div>
   );
 }
