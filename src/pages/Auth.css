@@ -1,0 +1,58 @@
+.auth-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafaf8;
+  padding: 24px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  border: 1px solid #e5e5e0;
+  border-radius: 12px;
+  padding: 40px 32px;
+}
+
+.auth-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #1a1a1a;
+}
+
+.auth-subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 24px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-error {
+  color: #C45B4A;
+  font-size: 0.85rem;
+  margin: 0;
+  padding: 8px 12px;
+  background: #fef2f0;
+  border-radius: 6px;
+}
+
+.auth-switch {
+  margin-top: 20px;
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: #2D6A4F;
+  font-weight: 500;
+}

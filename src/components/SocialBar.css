@@ -106,3 +106,14 @@
   opacity: 0.4;
   cursor: default;
 }
+
+.social-comment-login {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.social-comment-login a {
+  color: #2D6A4F;
+  font-weight: 500;
+}

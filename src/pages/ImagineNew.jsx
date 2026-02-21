@@ -3,6 +3,7 @@ import { useState, useCallback, useMemo } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import ItemCard from '../components/ItemCard';
+import { useAuth } from '../contexts/AuthContext';
 import { createVision, getVisionsInBounds } from '../services/visions';
 import { DEFAULT_CENTER } from '../config';
 import './ImagineNew.css';
@@ -16,6 +17,7 @@ export default function ImagineNew() {
   const location = useLocation();
   const navigate = useNavigate();
   const town = location.state?.town || TOWN_DEFAULTS[slug] || { name: slug, lat: DEFAULT_CENTER[1], lng: DEFAULT_CENTER[0] };
+  const { isLoggedIn } = useAuth();
 
   const [step, setStep] = useState('browse'); // browse | place | describe
   const [pin, setPin] = useState({ lat: town.lat, lng: town.lng });
@@ -67,9 +69,15 @@ export default function ImagineNew() {
           What could {town.name} become? Browse existing visions or create your own.
         </p>
 
-        <button className="imagine-start-btn" onClick={() => setStep('place')}>
-          + Create a new vision
-        </button>
+        {isLoggedIn ? (
+          <button className="imagine-start-btn" onClick={() => setStep('place')}>
+            + Create a new vision
+          </button>
+        ) : (
+          <Link to="/login" state={{ returnTo: location.pathname }} className="imagine-start-btn" style={{ textDecoration: 'none' }}>
+            Sign in to create a vision
+          </Link>
+        )}
 
         <div className="imagine-items">
           {existingVisions.length === 0 && bounds && (

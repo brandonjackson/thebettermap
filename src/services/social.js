@@ -1,7 +1,8 @@
-import { getCollection, setCollection, getUserId } from './storage.js';
+import { getCollection, setCollection } from './storage.js';
 import { updateOpportunity, getOpportunityById } from './opportunities.js';
 import { updateVision, getVisionById } from './visions.js';
 import { updateCelebration, getCelebrationById } from './celebrations.js';
+import { getCurrentUser } from './auth.js';
 
 const COMMENTS_KEY = 'comments';
 
@@ -19,14 +20,16 @@ function getItemAndUpdater(itemType, itemId) {
 }
 
 export function toggleBack(itemType, itemId) {
-  const userId = getUserId();
+  const user = getCurrentUser();
+  if (!user) return null;
+
   const { item, update } = getItemAndUpdater(itemType, itemId);
   if (!item || !update) return null;
 
   const backerIds = item.backerIds || [];
-  const idx = backerIds.indexOf(userId);
+  const idx = backerIds.indexOf(user.id);
   if (idx === -1) {
-    backerIds.push(userId);
+    backerIds.push(user.id);
   } else {
     backerIds.splice(idx, 1);
   }
@@ -34,10 +37,12 @@ export function toggleBack(itemType, itemId) {
 }
 
 export function hasUserBacked(itemType, itemId) {
-  const userId = getUserId();
+  const user = getCurrentUser();
+  if (!user) return false;
+
   const { item } = getItemAndUpdater(itemType, itemId);
   if (!item) return false;
-  return (item.backerIds || []).includes(userId);
+  return (item.backerIds || []).includes(user.id);
 }
 
 export function getBackerCount(item) {
@@ -49,12 +54,14 @@ export function getComments(itemId) {
 }
 
 export function addComment(itemId, itemType, text) {
+  const user = getCurrentUser();
   const comments = getCollection(COMMENTS_KEY);
   const comment = {
     id: crypto.randomUUID(),
     itemId,
     itemType,
-    author: 'Anonymous',
+    userId: user?.id || null,
+    author: user?.displayName || 'Anonymous',
     text,
     createdAt: new Date().toISOString(),
   };

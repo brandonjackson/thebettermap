@@ -1,20 +1,25 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { MAP_STYLE } from '../config';
 import './MapView.css';
-
-const MARKER_COLORS = {
-  opportunity: '#C45B4A',
-  vision: '#5B7FC4',
-  celebration: '#2D6A4F',
-};
 
 export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, onMarkerClick, showBullseye = false, onBullseyeMove }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
 
+  // Keep callback refs current so event handlers never go stale
+  const onMoveEndRef = useRef(onMoveEnd);
+  const onMarkerClickRef = useRef(onMarkerClick);
+  const onBullseyeMoveRef = useRef(onBullseyeMove);
+  const showBullseyeRef = useRef(showBullseye);
+  useEffect(() => { onMoveEndRef.current = onMoveEnd; }, [onMoveEnd]);
+  useEffect(() => { onMarkerClickRef.current = onMarkerClick; }, [onMarkerClick]);
+  useEffect(() => { onBullseyeMoveRef.current = onBullseyeMove; }, [onBullseyeMove]);
+  useEffect(() => { showBullseyeRef.current = showBullseye; }, [showBullseye]);
+
+  // Initialize map once
   useEffect(() => {
     if (mapRef.current) return;
 
@@ -29,16 +34,29 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     map.on('moveend', () => {
-      if (onMoveEnd) {
-        const bounds = map.getBounds();
-        onMoveEnd({
-          north: bounds.getNorth(),
-          south: bounds.getSouth(),
-          east: bounds.getEast(),
-          west: bounds.getWest(),
-          center: [map.getCenter().lng, map.getCenter().lat],
-        });
+      const bounds = map.getBounds();
+      onMoveEndRef.current?.({
+        north: bounds.getNorth(),
+        south: bounds.getSouth(),
+        east: bounds.getEast(),
+        west: bounds.getWest(),
+        center: [map.getCenter().lng, map.getCenter().lat],
+      });
+      if (showBullseyeRef.current) {
+        const c = map.getCenter();
+        onBullseyeMoveRef.current?.({ lat: c.lat, lng: c.lng });
       }
+    });
+
+    map.on('load', () => {
+      const bounds = map.getBounds();
+      onMoveEndRef.current?.({
+        north: bounds.getNorth(),
+        south: bounds.getSouth(),
+        east: bounds.getEast(),
+        west: bounds.getWest(),
+        center: [map.getCenter().lng, map.getCenter().lat],
+      });
     });
 
     mapRef.current = map;
@@ -49,15 +67,21 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Fire bullseye position when it first becomes visible
+  useEffect(() => {
+    if (showBullseye && mapRef.current) {
+      const c = mapRef.current.getCenter();
+      onBullseyeMoveRef.current?.({ lat: c.lat, lng: c.lng });
+    }
+  }, [showBullseye]);
+
   // Update markers
   useEffect(() => {
     if (!mapRef.current) return;
 
-    // Remove old markers
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
 
-    // Add new markers
     markers.forEach((item) => {
       const el = document.createElement('div');
       el.className = `map-marker map-marker--${item.type}`;
@@ -68,51 +92,12 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
 
       el.addEventListener('click', (e) => {
         e.stopPropagation();
-        onMarkerClick?.(item);
+        onMarkerClickRef.current?.(item);
       });
 
       markersRef.current.push(marker);
     });
-  }, [markers, onMarkerClick]);
-
-  // Fire initial bounds
-  useEffect(() => {
-    if (!mapRef.current || !onMoveEnd) return;
-    const checkReady = () => {
-      if (mapRef.current.loaded()) {
-        const bounds = mapRef.current.getBounds();
-        onMoveEnd({
-          north: bounds.getNorth(),
-          south: bounds.getSouth(),
-          east: bounds.getEast(),
-          west: bounds.getWest(),
-          center: [mapRef.current.getCenter().lng, mapRef.current.getCenter().lat],
-        });
-      } else {
-        mapRef.current.once('load', checkReady);
-      }
-    };
-    checkReady();
-  }, [onMoveEnd]);
-
-  const handleBullseyeCapture = useCallback(() => {
-    if (mapRef.current && onBullseyeMove) {
-      const c = mapRef.current.getCenter();
-      onBullseyeMove({ lat: c.lat, lng: c.lng });
-    }
-  }, [onBullseyeMove]);
-
-  // Track map movement for bullseye
-  useEffect(() => {
-    if (!showBullseye || !mapRef.current || !onBullseyeMove) return;
-    const map = mapRef.current;
-    map.on('moveend', handleBullseyeCapture);
-    // Fire initial position
-    handleBullseyeCapture();
-    return () => {
-      map.off('moveend', handleBullseyeCapture);
-    };
-  }, [showBullseye, handleBullseyeCapture, onBullseyeMove]);
+  }, [markers]);
 
   return (
     <div className="map-container" ref={containerRef}>
