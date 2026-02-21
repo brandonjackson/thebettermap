@@ -5,7 +5,7 @@ import './ItemCard.css';
 const TYPE_LABELS = {
   opportunity: 'Improvement',
   vision: 'Vision',
-  celebration: 'Celebration',
+  celebration: 'Local Beauty',
 };
 
 const TYPE_COLORS = {

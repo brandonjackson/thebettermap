@@ -20,8 +20,8 @@ export default function CelebrationDetail() {
   if (!item) {
     return (
       <div style={{ padding: 32 }}>
-        <p>Celebration not found.</p>
-        <Link to={`/town/${slug}/celebrate`}>Back to celebrations</Link>
+        <p>Not found.</p>
+        <Link to={`/town/${slug}/celebrate`}>Back to local beauty</Link>
       </div>
     );
   }
@@ -35,9 +35,9 @@ export default function CelebrationDetail() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}/celebrate`} state={{ town }} className="back-link">&larr; Back to celebrations</Link>
+      <Link to={`/town/${slug}/celebrate`} state={{ town }} className="back-link">&larr; Back to local beauty</Link>
 
-      <span className="detail-type detail-type--celebration">Celebration</span>
+      <span className="detail-type detail-type--celebration">Local Beauty</span>
       <h1 className="detail-title">{item.title}</h1>
 
       {allTags.length > 0 && (

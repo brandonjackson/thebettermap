@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { lookupPostcode } from '../services/postcodes';
-import ProgressBarLogo from '../components/ProgressBarLogo';
 import './Home.css';
 
 export default function Home() {
@@ -45,9 +44,8 @@ export default function Home() {
       <div className="home-hero">
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
-          <ProgressBarLogo height={36} />
           <h1 className="home-tagline">
-            A shared map for<br />a better Britain.
+            A shared map for a better Britain.
           </h1>
 
           <form className="home-form" onSubmit={handleSubmit}>
@@ -86,7 +84,7 @@ export default function Home() {
         </div>
         <div className="home-feature">
           <div className="home-feature-icon home-feature-icon--celebrate" />
-          <h3>Celebrate what&rsquo;s beautiful</h3>
+          <h3>Local beauty</h3>
           <p>Map the buildings, streets, and places that make your area special.</p>
         </div>
       </div>

@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <header className="header">
       <Link to="/" className="header-brand">
-        <ProgressBarLogo size={24} />
+        <ProgressBarLogo height={32} />
       </Link>
 
       <nav className="header-nav">

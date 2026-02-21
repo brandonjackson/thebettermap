@@ -50,9 +50,9 @@ export default function SubmitCelebration() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}/celebrate`} state={{ town }} className="back-link">&larr; Back to celebrations</Link>
+      <Link to={`/town/${slug}/celebrate`} state={{ town }} className="back-link">&larr; Back to local beauty</Link>
       <h1 style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, margin: '0 0 8px' }}>
-        Celebrate something beautiful
+        Add local beauty
       </h1>
       <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: 24 }}>
         Position the pin on the map, then tell us what makes this place special.
@@ -102,7 +102,7 @@ export default function SubmitCelebration() {
         ))}
 
         <button type="submit" className="form-submit" disabled={!title.trim() || !description.trim()}>
-          Save celebration
+          Save
         </button>
       </form>
     </div>

@@ -62,7 +62,7 @@ export default function Town() {
         <Link to={`/town/${slug}/celebrate`} state={{ town }} className="town-journey town-journey--celebrate">
           <div className="town-journey-icon" />
           <div>
-            <h2>Celebrate what&rsquo;s beautiful</h2>
+            <h2>Local beauty</h2>
             <p>Map the places that make this area special</p>
           </div>
         </Link>
@@ -74,7 +74,7 @@ export default function Town() {
             <button className={`town-filter ${!activeTab ? 'town-filter--active' : ''}`} onClick={() => setActiveTab(null)}>All</button>
             <button className={`town-filter ${activeTab === 'opportunity' ? 'town-filter--active' : ''}`} onClick={() => setActiveTab('opportunity')}>Issues</button>
             <button className={`town-filter ${activeTab === 'vision' ? 'town-filter--active' : ''}`} onClick={() => setActiveTab('vision')}>Visions</button>
-            <button className={`town-filter ${activeTab === 'celebration' ? 'town-filter--active' : ''}`} onClick={() => setActiveTab('celebration')}>Celebrations</button>
+            <button className={`town-filter ${activeTab === 'celebration' ? 'town-filter--active' : ''}`} onClick={() => setActiveTab('celebration')}>Local Beauty</button>
           </div>
           <div className="town-items">
             {filteredItems.map((item) => (

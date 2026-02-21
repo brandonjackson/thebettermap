@@ -37,18 +37,18 @@ export default function Celebrate() {
   const leftPanel = (
     <div className="celebrate-panel">
       <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
-      <h1 className="celebrate-title">Celebrate what&rsquo;s beautiful</h1>
+      <h1 className="celebrate-title">Local beauty</h1>
       <p className="celebrate-subtitle">
         Map the buildings, streets and places that make {town.name} special.
       </p>
 
       <Link to={`/town/${slug}/celebrate/submit`} state={{ town }} className="celebrate-submit-btn">
-        + Add a celebration
+        + Add local beauty
       </Link>
 
       <div className="celebrate-items">
         {items.length === 0 && bounds && (
-          <p className="celebrate-empty">No celebrations in this area yet. Share what you love!</p>
+          <p className="celebrate-empty">No local beauty spotted in this area yet. Share what you love!</p>
         )}
         {items.map((item) => (
           <ItemCard key={item.id} item={item} townSlug={slug} />

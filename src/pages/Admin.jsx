@@ -7,7 +7,7 @@ import { getAllComments, deleteComment } from '../services/social';
 import { useAuth } from '../contexts/AuthContext';
 import './Admin.css';
 
-const TABS = ['Users', 'Opportunities', 'Visions', 'Celebrations', 'Comments'];
+const TABS = ['Users', 'Opportunities', 'Visions', 'Local Beauty', 'Comments'];
 
 export default function Admin() {
   const { user: currentUser } = useAuth();
@@ -41,7 +41,7 @@ export default function Admin() {
         {tab === 'Users' && <UsersTable currentUserId={currentUser.id} onRefresh={refresh} />}
         {tab === 'Opportunities' && <ItemsTable type="opportunity" onRefresh={refresh} />}
         {tab === 'Visions' && <ItemsTable type="vision" onRefresh={refresh} />}
-        {tab === 'Celebrations' && <ItemsTable type="celebration" onRefresh={refresh} />}
+        {tab === 'Local Beauty' && <ItemsTable type="celebration" onRefresh={refresh} />}
         {tab === 'Comments' && <CommentsTable onRefresh={refresh} />}
       </div>
     </div>
