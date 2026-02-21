@@ -21,7 +21,7 @@ export default function Home() {
       const result = await lookupPostcode(postcode);
       navigate(`/town/${result.slug}`, { state: { town: result } });
     } catch {
-      setError('We couldn\u2019t find that postcode. Please check and try again.');
+      setError("We couldn\u2019t find that postcode. Please check and try again.");
     } finally {
       setLoading(false);
     }
@@ -48,7 +48,7 @@ export default function Home() {
         <p className="home-subtitle">
           Collectively imagine improvements to Britain.
           <br />
-          Find what needs fixing, dream up what could be, and celebrate what\u2019s already beautiful.
+          Find what needs fixing, dream up what could be, and celebrate what&rsquo;s already beautiful.
         </p>
 
         <form className="home-form" onSubmit={handleSubmit}>
@@ -86,7 +86,7 @@ export default function Home() {
         </div>
         <div className="home-feature">
           <div className="home-feature-icon home-feature-icon--celebrate" />
-          <h3>Celebrate what\u2019s beautiful</h3>
+          <h3>Celebrate what&rsquo;s beautiful</h3>
           <p>Map the buildings, streets, and places that make your area special.</p>
         </div>
       </div>
