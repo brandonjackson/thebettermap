@@ -1,0 +1,149 @@
+.vision-generating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: #f5f5f2;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.vision-generating p {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.vision-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e5e5e0;
+  border-top-color: #5B7FC4;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.vision-error {
+  padding: 16px;
+  background: #fef2f0;
+  border: 1px solid #e8ccc8;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.vision-error p {
+  margin: 0 0 8px;
+  color: #C45B4A;
+  font-size: 0.9rem;
+}
+
+.vision-retry-btn {
+  padding: 6px 14px;
+  background: #fff;
+  border: 1px solid #C45B4A;
+  border-radius: 6px;
+  color: #C45B4A;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.vision-retry-btn:hover {
+  background: #fef2f0;
+}
+
+.vision-images {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.vision-image-wrap {
+  position: relative;
+}
+
+.vision-image {
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease;
+  display: block;
+}
+
+.vision-image:hover {
+  border-color: #5B7FC4;
+}
+
+.vision-image--selected {
+  border-color: #5B7FC4;
+}
+
+.vision-select-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e5e5e0;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+  font-family: inherit;
+  backdrop-filter: blur(4px);
+}
+
+.vision-select-btn:hover {
+  background: #fff;
+  border-color: #5B7FC4;
+  color: #5B7FC4;
+}
+
+.vision-select-btn--active {
+  background: #5B7FC4;
+  color: #fff;
+  border-color: #5B7FC4;
+}
+
+.vision-revised {
+  font-size: 0.8rem;
+  color: #888;
+  line-height: 1.4;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  background: #f5f5f2;
+  border-radius: 6px;
+}
+
+.vision-revised strong {
+  color: #666;
+}
+
+.vision-regen-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #fff;
+  border: 1px solid #5B7FC4;
+  border-radius: 8px;
+  color: #5B7FC4;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.vision-regen-btn:hover {
+  background: #5B7FC4;
+  color: #fff;
+}

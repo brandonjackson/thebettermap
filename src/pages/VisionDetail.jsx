@@ -1,10 +1,12 @@
 import { useParams, useLocation, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import SocialBar from '../components/SocialBar';
-import { getVisionById } from '../services/visions';
+import { getVisionById, updateVision } from '../services/visions';
+import { generateImage } from '../services/imageGeneration';
 import { DEFAULT_CENTER } from '../config';
+import './VisionDetail.css';
 
 const TOWN_DEFAULTS = {
   'stoke-newington': { name: 'Stoke Newington', lat: 51.5633, lng: -0.0796 },
@@ -16,6 +18,43 @@ export default function VisionDetail() {
   const town = location.state?.town || TOWN_DEFAULTS[slug] || { name: slug, lat: DEFAULT_CENTER[1], lng: DEFAULT_CENTER[0] };
 
   const [item, setItem] = useState(() => getVisionById(id));
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState('');
+  const [revisedPrompt, setRevisedPrompt] = useState('');
+  const hasTriedGeneration = useRef(false);
+
+  // Auto-generate image on first load if none exist
+  useEffect(() => {
+    if (!item || item.generatedImages.length > 0 || hasTriedGeneration.current) return;
+    hasTriedGeneration.current = true;
+    handleGenerate();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleGenerate() {
+    if (!item) return;
+    setGenerating(true);
+    setError('');
+
+    try {
+      const result = await generateImage(item.prompt);
+      const updated = updateVision(item.id, {
+        generatedImages: [...item.generatedImages, ...result.images],
+      });
+      setItem(updated);
+      if (result.revisedPrompt) {
+        setRevisedPrompt(result.revisedPrompt);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setGenerating(false);
+    }
+  }
+
+  function handleSelectImage(index) {
+    const updated = updateVision(item.id, { selectedImageIndex: index });
+    setItem(updated);
+  }
 
   if (!item) {
     return (
@@ -25,6 +64,9 @@ export default function VisionDetail() {
       </div>
     );
   }
+
+  const hasImages = item.generatedImages.length > 0;
+  const selectedIdx = item.selectedImageIndex;
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
@@ -38,16 +80,53 @@ export default function VisionDetail() {
         <p>{item.prompt}</p>
       </div>
 
-      {item.generatedImages.length > 0 ? (
-        <div className="detail-images">
+      {generating && (
+        <div className="vision-generating">
+          <div className="vision-spinner" />
+          <p>Generating your vision&hellip;</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="vision-error">
+          <p>{error}</p>
+          <button className="vision-retry-btn" onClick={handleGenerate}>Try again</button>
+        </div>
+      )}
+
+      {hasImages && (
+        <div className="vision-images">
           {item.generatedImages.map((url, i) => (
-            <img key={i} src={url} alt={`Vision option ${i + 1}`} className="detail-gen-image" />
+            <div key={i} className="vision-image-wrap">
+              <img
+                src={url}
+                alt={`Vision option ${i + 1}`}
+                className={`vision-image ${selectedIdx === i ? 'vision-image--selected' : ''}`}
+                onClick={() => handleSelectImage(i)}
+              />
+              {item.generatedImages.length > 1 && (
+                <button
+                  className={`vision-select-btn ${selectedIdx === i ? 'vision-select-btn--active' : ''}`}
+                  onClick={() => handleSelectImage(i)}
+                >
+                  {selectedIdx === i ? 'Selected' : 'Select this'}
+                </button>
+              )}
+            </div>
           ))}
         </div>
-      ) : (
-        <div className="detail-placeholder-image">
-          <p>Image generation coming soon. For now, use your imagination.</p>
-        </div>
+      )}
+
+      {revisedPrompt && (
+        <p className="vision-revised">
+          <strong>DALL-E interpreted as:</strong> {revisedPrompt}
+        </p>
+      )}
+
+      {!generating && (
+        <button className="vision-regen-btn" onClick={handleGenerate}>
+          {hasImages ? 'Generate another option' : 'Generate image'}
+        </button>
       )}
 
       <SocialBar item={item} townSlug={slug} onUpdate={setItem} />

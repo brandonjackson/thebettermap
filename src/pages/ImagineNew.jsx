@@ -130,7 +130,7 @@ export default function ImagineNew() {
             Describe what you imagine
             <textarea
               className="form-input form-textarea"
-              placeholder="Describe what you'd love to see here. Be as vivid as you like — in future this will feed an image generator..."
+              placeholder="Describe what you'd love to see here. Be as vivid as you like — this will generate an image of your vision."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               rows={6}
