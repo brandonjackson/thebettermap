@@ -43,34 +43,34 @@ export default function Home() {
   return (
     <div className="home">
       <div className="home-hero">
-        <ProgressBarLogo size={40} />
-        <h1 className="home-title">Progress Map</h1>
-        <p className="home-subtitle">
-          Collectively imagine improvements to Britain.
-          <br />
-          Find what needs fixing, dream up what could be, and celebrate what&rsquo;s already beautiful.
-        </p>
+        <div className="home-hero-overlay" />
+        <div className="home-hero-content">
+          <ProgressBarLogo height={36} />
+          <h1 className="home-tagline">
+            A shared map for<br />a better Britain.
+          </h1>
 
-        <form className="home-form" onSubmit={handleSubmit}>
-          <div className="home-input-group">
-            <input
-              type="text"
-              className="home-input"
-              placeholder="Enter your postcode"
-              value={postcode}
-              onChange={(e) => setPostcode(e.target.value)}
-              aria-label="Postcode"
-            />
-            <button type="submit" className="home-btn" disabled={loading}>
-              {loading ? 'Looking up...' : 'Explore your area'}
-            </button>
-          </div>
-          {error && <p className="home-error">{error}</p>}
-        </form>
+          <form className="home-form" onSubmit={handleSubmit}>
+            <div className="home-input-group">
+              <input
+                type="text"
+                className="home-input"
+                placeholder="Enter your postcode"
+                value={postcode}
+                onChange={(e) => setPostcode(e.target.value)}
+                aria-label="Postcode"
+              />
+              <button type="submit" className="home-btn" disabled={loading}>
+                {loading ? 'Looking up...' : 'Explore your area'}
+              </button>
+            </div>
+            {error && <p className="home-error">{error}</p>}
+          </form>
 
-        <button className="home-demo-link" onClick={handleDemo}>
-          Or explore Stoke Newington, London
-        </button>
+          <button className="home-demo-link" onClick={handleDemo}>
+            Or explore Stoke Newington, London
+          </button>
+        </div>
       </div>
 
       <div className="home-features">

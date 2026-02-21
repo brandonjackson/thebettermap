@@ -6,69 +6,94 @@
   background: #fafaf8;
 }
 
+/* ── Hero with background image ── */
+
 .home-hero {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('/lakes.jpeg') center / cover no-repeat;
+}
+
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+}
+
+.home-hero-content {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 80px 24px 60px;
-  max-width: 600px;
+  padding: 80px 24px 72px;
+  max-width: 640px;
+  width: 100%;
 }
 
-.home-title {
+/* ── Tagline ── */
+
+.home-tagline {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 3rem;
+  font-size: 3.4rem;
   font-weight: 600;
-  color: #1a1a1a;
-  margin: 20px 0 0;
+  color: #fff;
+  margin: 28px 0 40px;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.15;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
-.home-subtitle {
-  font-size: 1.15rem;
-  color: #555;
-  line-height: 1.6;
-  margin: 16px 0 40px;
-}
+/* ── Search bar (pill shape) ── */
 
 .home-form {
   width: 100%;
-  max-width: 440px;
+  max-width: 480px;
 }
 
 .home-input-group {
   display: flex;
   gap: 0;
-  border: 2px solid #e5e5e0;
-  border-radius: 8px;
+  border: none;
+  border-radius: 999px;
   overflow: hidden;
   background: #fff;
-  transition: border-color 0.15s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
 }
 
 .home-input-group:focus-within {
-  border-color: #2D6A4F;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(45, 106, 79, 0.35);
 }
 
 .home-input {
   flex: 1;
-  padding: 14px 16px;
+  padding: 16px 24px;
   border: none;
-  font-size: 1rem;
+  font-size: 1.05rem;
   outline: none;
   background: transparent;
+  min-width: 0;
 }
 
 .home-btn {
-  padding: 14px 24px;
+  padding: 16px 28px;
   background: #2D6A4F;
   color: #fff;
   border: none;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
+  border-radius: 0 999px 999px 0;
   transition: background 0.15s ease;
 }
 
@@ -82,32 +107,38 @@
 }
 
 .home-error {
-  color: #C45B4A;
+  color: #fca5a5;
   font-size: 0.85rem;
-  margin: 8px 0 0;
+  margin: 10px 0 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* ── Demo link ── */
+
 .home-demo-link {
-  margin-top: 16px;
-  color: #2D6A4F;
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.9rem;
   cursor: pointer;
   background: none;
   border: none;
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: color 0.15s ease;
 }
 
 .home-demo-link:hover {
-  color: #245A42;
+  color: #fff;
 }
+
+/* ── Features ── */
 
 .home-features {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px;
   max-width: 840px;
-  padding: 0 24px 80px;
+  padding: 64px 24px 80px;
   width: 100%;
 }
 
@@ -150,27 +181,39 @@
   background: #2D6A4F;
 }
 
+/* ── Mobile ── */
+
 @media (max-width: 640px) {
   .home-hero {
-    padding: 48px 16px 40px;
+    min-height: 440px;
   }
 
-  .home-title {
-    font-size: 2.2rem;
+  .home-hero-content {
+    padding: 56px 20px 56px;
+  }
+
+  .home-tagline {
+    font-size: 2.4rem;
+    margin: 24px 0 32px;
+  }
+
+  .home-input-group {
+    flex-direction: column;
+    border-radius: 24px;
+  }
+
+  .home-input {
+    padding: 14px 20px;
+  }
+
+  .home-btn {
+    border-radius: 0 0 24px 24px;
+    padding: 14px 24px;
   }
 
   .home-features {
     grid-template-columns: 1fr;
     gap: 16px;
-    padding: 0 16px 48px;
-  }
-
-  .home-input-group {
-    flex-direction: column;
-    border-radius: 8px;
-  }
-
-  .home-btn {
-    border-radius: 0;
+    padding: 40px 16px 48px;
   }
 }
