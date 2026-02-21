@@ -70,6 +70,11 @@ export function updateUserRole(userId, role) {
   return sanitize(users[idx]);
 }
 
+export function deleteUser(userId) {
+  const users = getCollection(USERS_KEY).filter((u) => u.id !== userId);
+  setCollection(USERS_KEY, users);
+}
+
 function sanitize(user) {
   const { password, ...safe } = user;
   return safe;

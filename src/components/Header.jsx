@@ -20,6 +20,7 @@ export default function Header() {
               {user.displayName}
               {isAdmin && <span className="header-badge">Admin</span>}
             </span>
+            {isAdmin && <Link to="/admin" className="header-link">Console</Link>}
             <button className="header-link" onClick={logout}>Sign out</button>
           </>
         ) : (

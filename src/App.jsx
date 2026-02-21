@@ -13,7 +13,9 @@ import SubmitCelebration from './pages/SubmitCelebration';
 import CelebrationDetail from './pages/CelebrationDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Admin from './pages/Admin';
 import RequireAuth from './components/RequireAuth';
+import RequireAdmin from './components/RequireAdmin';
 
 export default function App() {
   return (
@@ -34,6 +36,7 @@ export default function App() {
             <Route path="/town/:slug/celebrate" element={<Celebrate />} />
             <Route path="/town/:slug/celebrate/submit" element={<RequireAuth><SubmitCelebration /></RequireAuth>} />
             <Route path="/town/:slug/celebrate/:id" element={<CelebrationDetail />} />
+            <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
           </Routes>
         </main>
       </div>

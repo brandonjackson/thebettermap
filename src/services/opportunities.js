@@ -43,6 +43,11 @@ export function updateOpportunity(id, updates) {
   return items[idx];
 }
 
+export function deleteOpportunity(id) {
+  const items = getCollection(KEY).filter((o) => o.id !== id);
+  setCollection(KEY, items);
+}
+
 export function getOpportunitiesInBounds(townSlug, bounds) {
   return getOpportunitiesByTown(townSlug).filter(
     (o) => o.lng >= bounds.west && o.lng <= bounds.east && o.lat >= bounds.south && o.lat <= bounds.north

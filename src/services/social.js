@@ -70,6 +70,15 @@ export function addComment(itemId, itemType, text) {
   return comment;
 }
 
+export function deleteComment(commentId) {
+  const comments = getCollection(COMMENTS_KEY).filter((c) => c.id !== commentId);
+  setCollection(COMMENTS_KEY, comments);
+}
+
+export function getAllComments() {
+  return getCollection(COMMENTS_KEY);
+}
+
 export function getShareUrl(itemType, townSlug, itemId) {
   const journeyPath = itemType === 'opportunity' ? 'improve' : itemType === 'vision' ? 'imagine' : 'celebrate';
   return `${window.location.origin}/town/${townSlug}/${journeyPath}/${itemId}`;

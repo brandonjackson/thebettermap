@@ -43,6 +43,11 @@ export function updateVision(id, updates) {
   return items[idx];
 }
 
+export function deleteVision(id) {
+  const items = getCollection(KEY).filter((v) => v.id !== id);
+  setCollection(KEY, items);
+}
+
 export function getVisionsInBounds(townSlug, bounds) {
   return getVisionsByTown(townSlug).filter(
     (v) => v.lng >= bounds.west && v.lng <= bounds.east && v.lat >= bounds.south && v.lat <= bounds.north

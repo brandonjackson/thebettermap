@@ -43,6 +43,11 @@ export function updateCelebration(id, updates) {
   return items[idx];
 }
 
+export function deleteCelebration(id) {
+  const items = getCollection(KEY).filter((c) => c.id !== id);
+  setCollection(KEY, items);
+}
+
 export function getCelebrationsInBounds(townSlug, bounds) {
   return getCelebrationsByTown(townSlug).filter(
     (c) => c.lng >= bounds.west && c.lng <= bounds.east && c.lat >= bounds.south && c.lat <= bounds.north
