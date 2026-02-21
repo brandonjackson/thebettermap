@@ -14,6 +14,7 @@ import CelebrationDetail from './pages/CelebrationDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Admin from './pages/Admin';
+import About from './pages/About';
 import RequireAuth from './components/RequireAuth';
 import RequireAdmin from './components/RequireAdmin';
 
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
             <Route path="/town/:slug" element={<Town />} />
             <Route path="/town/:slug/improve" element={<FindImprovements />} />
             <Route path="/town/:slug/improve/submit" element={<RequireAuth><SubmitOpportunity /></RequireAuth>} />

@@ -14,6 +14,7 @@ export default function Header() {
       </Link>
 
       <nav className="header-nav">
+        <Link to="/about" className="header-link">About</Link>
         {isLoggedIn ? (
           <>
             <span className="header-user">
