@@ -62,7 +62,7 @@ export default function Town() {
         <Link to={`/town/${slug}/celebrate`} state={{ town }} className="town-journey town-journey--celebrate">
           <div className="town-journey-icon" />
           <div>
-            <h2>Local beauty</h2>
+            <h2>Record local beauty</h2>
             <p>Map the places that make this area special</p>
           </div>
         </Link>
