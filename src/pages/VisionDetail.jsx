@@ -23,7 +23,7 @@ export default function VisionDetail() {
   const [revisedPrompt, setRevisedPrompt] = useState('');
   const hasTriedGeneration = useRef(false);
 
-  // Auto-generate image on first load if none exist
+  // Auto-generate image on first load if none exist and not yet published
   useEffect(() => {
     if (!item || item.generatedImages.length > 0 || hasTriedGeneration.current) return;
     hasTriedGeneration.current = true;
@@ -35,8 +35,11 @@ export default function VisionDetail() {
     setGenerating(true);
     setError('');
 
+    const locationPrefix = `In ${town.name}, `;
+    const fullPrompt = locationPrefix + item.prompt;
+
     try {
-      const result = await generateImage(item.prompt);
+      const result = await generateImage(fullPrompt);
       const updated = updateVision(item.id, {
         generatedImages: [...item.generatedImages, ...result.images],
       });
@@ -56,6 +59,21 @@ export default function VisionDetail() {
     setItem(updated);
   }
 
+  function handlePublish() {
+    if (item.selectedImageIndex == null && item.generatedImages.length === 1) {
+      const updated = updateVision(item.id, { selectedImageIndex: 0, published: true });
+      setItem(updated);
+    } else {
+      const updated = updateVision(item.id, { published: true });
+      setItem(updated);
+    }
+  }
+
+  function handleUnpublish() {
+    const updated = updateVision(item.id, { published: false });
+    setItem(updated);
+  }
+
   if (!item) {
     return (
       <div style={{ padding: 32 }}>
@@ -67,11 +85,16 @@ export default function VisionDetail() {
 
   const hasImages = item.generatedImages.length > 0;
   const selectedIdx = item.selectedImageIndex;
+  const isPublished = item.published !== false;
+  const canPublish = hasImages && (selectedIdx != null || item.generatedImages.length === 1);
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
       <Link to={`/town/${slug}/imagine`} state={{ town }} className="back-link">&larr; Back to visions</Link>
 
+      {!isPublished && (
+        <span className="vision-draft-badge">Draft</span>
+      )}
       <span className="detail-type detail-type--vision">Vision</span>
       <h1 className="detail-title">{item.title}</h1>
 
@@ -79,6 +102,13 @@ export default function VisionDetail() {
         <h3>The vision</h3>
         <p>{item.prompt}</p>
       </div>
+
+      {item.referenceImage && (
+        <div className="vision-reference">
+          <h3 className="vision-reference-label">Reference image</h3>
+          <img src={item.referenceImage} alt="Reference" className="vision-reference-img" />
+        </div>
+      )}
 
       {generating && (
         <div className="vision-generating">
@@ -127,6 +157,31 @@ export default function VisionDetail() {
         <button className="vision-regen-btn" onClick={handleGenerate}>
           {hasImages ? 'Generate another option' : 'Generate image'}
         </button>
+      )}
+
+      {!isPublished && (
+        <div className="vision-publish-section">
+          <button
+            className="vision-publish-btn"
+            onClick={handlePublish}
+            disabled={!canPublish}
+          >
+            Publish vision
+          </button>
+          {!canPublish && hasImages && (
+            <p className="vision-publish-hint">Select an image to publish</p>
+          )}
+          {!canPublish && !hasImages && (
+            <p className="vision-publish-hint">Generate an image first</p>
+          )}
+        </div>
+      )}
+
+      {isPublished && (
+        <div className="vision-publish-section">
+          <span className="vision-published-badge">Published</span>
+          <button className="vision-unpublish-btn" onClick={handleUnpublish}>Unpublish</button>
+        </div>
       )}
 
       <SocialBar item={item} townSlug={slug} onUpdate={setItem} />

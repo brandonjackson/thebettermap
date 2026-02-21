@@ -23,6 +23,7 @@ export default function ImagineNew() {
   const [pin, setPin] = useState({ lat: town.lat, lng: town.lng });
   const [title, setTitle] = useState('');
   const [prompt, setPrompt] = useState('');
+  const [referenceImage, setReferenceImage] = useState(null);
   const [bounds, setBounds] = useState(null);
 
   const handleMoveEnd = useCallback((b) => {
@@ -34,10 +35,18 @@ export default function ImagineNew() {
 
   const existingVisions = useMemo(() => {
     if (!bounds) return [];
-    return getVisionsInBounds(slug, bounds).sort(
+    return getVisionsInBounds(slug, bounds, { publishedOnly: true }).sort(
       (a, b) => (b.backerIds?.length || 0) - (a.backerIds?.length || 0)
     );
   }, [bounds, slug]);
+
+  function handleReferenceImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setReferenceImage(reader.result);
+    reader.readAsDataURL(file);
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -49,9 +58,10 @@ export default function ImagineNew() {
       prompt: prompt.trim(),
       lat: pin.lat,
       lng: pin.lng,
+      referenceImage,
     });
 
-    navigate(`/town/${slug}/imagine/${item.id}`);
+    navigate(`/town/${slug}/imagine/${item.id}`, { state: { town } });
   }
 
   function handleMarkerClick(item) {
@@ -130,13 +140,30 @@ export default function ImagineNew() {
             Describe what you imagine
             <textarea
               className="form-input form-textarea"
-              placeholder="Describe what you'd love to see here. Be as vivid as you like — this will generate an image of your vision."
+              placeholder="Describe what you'd love to see here. Be as vivid as you like &mdash; this will generate an image of your vision."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               rows={6}
               required
             />
           </label>
+
+          <div className="form-label">
+            Reference image <span className="imagine-optional">(optional)</span>
+            <p className="imagine-ref-hint">Attach a photo for inspiration &mdash; it won&rsquo;t be used in generation, but helps others understand your idea.</p>
+            <input
+              type="file"
+              accept="image/*"
+              className="form-input"
+              onChange={handleReferenceImage}
+            />
+            {referenceImage && (
+              <div className="imagine-ref-preview">
+                <img src={referenceImage} alt="Reference preview" />
+                <button type="button" className="imagine-ref-remove" onClick={() => setReferenceImage(null)}>Remove</button>
+              </div>
+            )}
+          </div>
 
           <button type="submit" className="form-submit" disabled={!title.trim() || !prompt.trim()}>
             Save vision

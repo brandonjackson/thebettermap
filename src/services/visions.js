@@ -14,7 +14,7 @@ export function getVisionById(id) {
   return getCollection(KEY).find((v) => v.id === id) || null;
 }
 
-export function createVision({ townSlug, title, prompt, lat, lng }) {
+export function createVision({ townSlug, title, prompt, lat, lng, referenceImage }) {
   const items = getCollection(KEY);
   const item = {
     id: crypto.randomUUID(),
@@ -22,8 +22,10 @@ export function createVision({ townSlug, title, prompt, lat, lng }) {
     townSlug,
     title,
     prompt,
+    referenceImage: referenceImage || null,
     generatedImages: [],
     selectedImageIndex: null,
+    published: false,
     lat,
     lng,
     backerIds: [],
@@ -48,8 +50,9 @@ export function deleteVision(id) {
   setCollection(KEY, items);
 }
 
-export function getVisionsInBounds(townSlug, bounds) {
+export function getVisionsInBounds(townSlug, bounds, { publishedOnly = false } = {}) {
   return getVisionsByTown(townSlug).filter(
     (v) => v.lng >= bounds.west && v.lng <= bounds.east && v.lat >= bounds.south && v.lat <= bounds.north
+      && (!publishedOnly || v.published !== false)
   );
 }
