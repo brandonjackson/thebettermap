@@ -1,16 +1,73 @@
-# React + Vite
+# Progress Map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A civic platform for collectively imagining improvements to Britain. Find what needs fixing, dream up what could be, and celebrate what's already beautiful.
 
-Currently, two official plugins are available:
+## Getting started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
 
-## React Compiler
+- Node.js 18+
+- A free [MapTiler](https://cloud.maptiler.com/) API key
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Setup
 
-## Expanding the ESLint configuration
+```bash
+npm install
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Create a `.env` file in the project root:
+
+```
+VITE_MAPTILER_KEY=your_maptiler_api_key_here
+```
+
+### Run locally
+
+```bash
+npm start
+```
+
+The app will be available at `http://localhost:5173`.
+
+### Build for production
+
+```bash
+npm run build
+```
+
+Output goes to `dist/`.
+
+## Project structure
+
+```
+src/
+  services/       # Data layer (localStorage, swappable to real API)
+  components/     # Reusable UI: MapView, SplitLayout, ItemCard, SocialBar
+  pages/          # Route-level views (Home, Town, Journey 1–3)
+  config.js       # Constants, categories, map config
+```
+
+### Key architectural decisions
+
+- **Service layer pattern** — all reads and writes go through `src/services/`, never directly from components. Currently backed by localStorage. Swap the implementation to a real backend without touching UI code.
+- **Three journeys** — Fix (opportunities), Imagine (visions), Celebrate (celebrations) — each with its own service, submission flow, and detail page.
+- **Social layer** — backing, comments, and sharing work across all three item types via `src/services/social.js`.
+
+## Routes
+
+| Path | Page |
+|------|------|
+| `/` | Home — postcode input |
+| `/town/:slug` | Town hub — three journey buttons + map |
+| `/town/:slug/improve` | Browse improvement opportunities |
+| `/town/:slug/improve/submit` | Report a new issue |
+| `/town/:slug/improve/:id` | Opportunity detail |
+| `/town/:slug/imagine` | Browse and create visions |
+| `/town/:slug/imagine/:id` | Vision detail |
+| `/town/:slug/celebrate` | Browse celebrations |
+| `/town/:slug/celebrate/submit` | Add a celebration |
+| `/town/:slug/celebrate/:id` | Celebration detail |
+
+## Seed data
+
+On first load the app seeds Stoke Newington, London with 10 local landmarks (Clissold Park, Abney Park Cemetery, Church Street, etc.) and 2 sample improvement opportunities so the app has content immediately.
