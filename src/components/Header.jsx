@@ -10,7 +10,6 @@ export default function Header() {
     <header className="header">
       <Link to="/" className="header-brand">
         <ProgressBarLogo size={24} />
-        <span className="header-title">Progress Map</span>
       </Link>
 
       <nav className="header-nav">
