@@ -1,0 +1,48 @@
+.imagine-panel {
+  max-width: 480px;
+}
+
+.imagine-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: #1a1a1a;
+}
+
+.imagine-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.imagine-start-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #5B7FC4;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: background 0.15s ease;
+}
+
+.imagine-start-btn:hover {
+  background: #4A6DB3;
+}
+
+.imagine-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imagine-empty {
+  color: #999;
+  font-size: 0.9rem;
+  font-style: italic;
+}

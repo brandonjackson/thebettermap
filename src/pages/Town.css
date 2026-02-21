@@ -1,0 +1,109 @@
+.town-panel {
+  max-width: 480px;
+}
+
+.town-name {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+}
+
+.town-subtitle {
+  color: #666;
+  font-size: 1rem;
+  margin: 0 0 32px;
+}
+
+.town-journeys {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.town-journey {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #e5e5e0;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+}
+
+.town-journey:hover {
+  border-color: #ccc;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.town-journey-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.town-journey--improve .town-journey-icon {
+  background: #C45B4A;
+}
+
+.town-journey--imagine .town-journey-icon {
+  background: #5B7FC4;
+}
+
+.town-journey--celebrate .town-journey-icon {
+  background: #2D6A4F;
+}
+
+.town-journey h2 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0 0 4px;
+}
+
+.town-journey p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.town-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.town-filter {
+  padding: 6px 14px;
+  border: 1px solid #e5e5e0;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.15s ease;
+}
+
+.town-filter:hover {
+  border-color: #ccc;
+}
+
+.town-filter--active {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+.town-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

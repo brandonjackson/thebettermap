@@ -1,0 +1,108 @@
+.social-bar {
+  margin-top: 24px;
+  border-top: 1px solid #e5e5e0;
+  padding-top: 16px;
+}
+
+.social-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.social-btn {
+  padding: 8px 16px;
+  border: 1px solid #e5e5e0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #555;
+}
+
+.social-btn:hover {
+  border-color: #ccc;
+  background: #fafaf8;
+}
+
+.social-btn--back {
+  border-color: #2D6A4F;
+  color: #2D6A4F;
+}
+
+.social-btn--backed {
+  background: #2D6A4F;
+  color: #fff;
+  border-color: #2D6A4F;
+}
+
+.social-btn-icon {
+  font-size: 0.8rem;
+}
+
+.social-comments {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-comment {
+  padding: 12px;
+  background: #fafaf8;
+  border-radius: 6px;
+}
+
+.social-comment-author {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: #333;
+}
+
+.social-comment-text {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+.social-comment-date {
+  font-size: 0.7rem;
+  color: #999;
+}
+
+.social-comment-form {
+  display: flex;
+  gap: 8px;
+}
+
+.social-comment-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #e5e5e0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.social-comment-input:focus {
+  border-color: #2D6A4F;
+}
+
+.social-comment-submit {
+  padding: 8px 16px;
+  background: #2D6A4F;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.social-comment-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

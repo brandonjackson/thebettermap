@@ -1,0 +1,251 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #fafaf8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-main {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+a {
+  color: #2D6A4F;
+}
+
+/* Shared form styles */
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-input {
+  padding: 10px 12px;
+  border: 1px solid #e5e5e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease;
+  background: #fff;
+}
+
+.form-input:focus {
+  border-color: #2D6A4F;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-submit {
+  padding: 12px 24px;
+  background: #2D6A4F;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.form-submit:hover {
+  background: #245A42;
+}
+
+.form-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.form-tag-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-tag-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.form-tag {
+  padding: 4px 12px;
+  border: 1px solid #e5e5e0;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #555;
+  transition: all 0.15s ease;
+}
+
+.form-tag:hover {
+  border-color: #2D6A4F;
+}
+
+.form-tag--selected {
+  background: #2D6A4F;
+  color: #fff;
+  border-color: #2D6A4F;
+}
+
+/* Shared detail page styles */
+.detail-type {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.detail-type--opportunity { color: #C45B4A; }
+.detail-type--vision { color: #5B7FC4; }
+.detail-type--celebration { color: #2D6A4F; }
+
+.detail-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 4px 0 16px;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.detail-category {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f0f0ec;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.detail-photo {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.detail-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.detail-description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+  margin: 0;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.detail-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  background: #f0f0ec;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.detail-vision-prompt {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f0f0ec;
+  border-radius: 8px;
+}
+
+.detail-vision-prompt h3 {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.detail-vision-prompt p {
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.detail-placeholder-image {
+  padding: 40px 24px;
+  background: #f5f5f2;
+  border: 1px dashed #ddd;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.detail-placeholder-image p {
+  color: #999;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin: 0;
+}
+
+.detail-gen-image {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.back-link {
+  display: inline-block;
+  color: #666;
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.back-link:hover {
+  color: #333;
+}

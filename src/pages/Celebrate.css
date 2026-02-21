@@ -1,0 +1,48 @@
+.celebrate-panel {
+  max-width: 480px;
+}
+
+.celebrate-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: #1a1a1a;
+}
+
+.celebrate-subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.celebrate-submit-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #2D6A4F;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: background 0.15s ease;
+}
+
+.celebrate-submit-btn:hover {
+  background: #245A42;
+}
+
+.celebrate-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.celebrate-empty {
+  color: #999;
+  font-size: 0.9rem;
+  font-style: italic;
+}
