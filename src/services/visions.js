@@ -1,4 +1,5 @@
 import { getCollection, setCollection } from './storage.js';
+import { getCurrentUser } from './auth.js';
 
 const KEY = 'visions';
 
@@ -32,6 +33,7 @@ export function createVision({ townSlug, title, prompt, lat, lng, referenceImage
     lat,
     lng,
     backerIds: [],
+    createdBy: getCurrentUser()?.id || null,
     createdAt: new Date().toISOString(),
   };
   items.push(item);

@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import SocialBar from '../components/SocialBar';
+import { useAuth } from '../contexts/AuthContext';
 import { getVisionById, updateVision } from '../services/visions';
 import { generateImage } from '../services/imageGeneration';
 import { saveImage, loadImage } from '../services/imageStore';
@@ -17,6 +18,7 @@ const TOWN_DEFAULTS = {
 export default function VisionDetail() {
   const { slug, id } = useParams();
   const location = useLocation();
+  const { user, isLoggedIn } = useAuth();
   const town = location.state?.town || TOWN_DEFAULTS[slug] || { name: slug, lat: DEFAULT_CENTER[1], lng: DEFAULT_CENTER[0] };
 
   const [item, setItem] = useState(() => getVisionById(id));
@@ -25,12 +27,15 @@ export default function VisionDetail() {
   const [revisedPrompt, setRevisedPrompt] = useState('');
   const hasTriedGeneration = useRef(false);
 
-  // Auto-generate image on first load if none exist and not yet published
+  const isOwner = isLoggedIn && item && item.createdBy === user?.id;
+
+  // Auto-generate image on first load if none exist and not yet published (only for owner)
   useEffect(() => {
     if (!item || item.generatedImages.length > 0 || hasTriedGeneration.current) return;
+    if (!isOwner) return;
     hasTriedGeneration.current = true;
     handleGenerate();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOwner]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleGenerate() {
     if (!item) return;
@@ -102,6 +107,13 @@ export default function VisionDetail() {
   const isPublished = item.published !== false;
   const canPublish = hasImages && (selectedIdx != null || item.generatedImages.length === 1);
 
+  // Determine which image to show as the hero in view mode
+  const heroImageRef = selectedIdx != null
+    ? item.generatedImages[selectedIdx]
+    : item.generatedImages.length === 1
+      ? item.generatedImages[0]
+      : null;
+
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
       <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
@@ -117,104 +129,150 @@ export default function VisionDetail() {
         <p>{item.prompt}</p>
       </div>
 
-      {item.siteImage && (
-        <div className="vision-reference">
-          <h3 className="vision-reference-label">Site photo</h3>
-          <StoredImage src={item.siteImage} alt="Site" className="vision-reference-img" />
-        </div>
+      {/* --- VIEW STATE: shown to everyone --- */}
+      {!isOwner && (
+        <>
+          {heroImageRef && (
+            <div className="vision-hero">
+              <StoredImage src={heroImageRef} alt={item.title} className="vision-hero-img" />
+            </div>
+          )}
+
+          {!heroImageRef && hasImages && (
+            <div className="vision-hero">
+              <StoredImage src={item.generatedImages[0]} alt={item.title} className="vision-hero-img" />
+            </div>
+          )}
+
+          {item.siteImage && (
+            <div className="vision-reference">
+              <h3 className="vision-reference-label">Site photo</h3>
+              <StoredImage src={item.siteImage} alt="Site" className="vision-reference-img" />
+            </div>
+          )}
+
+          {item.inspirationImages?.length > 0 && (
+            <div className="vision-reference">
+              <h3 className="vision-reference-label">Inspiration images</h3>
+              <div className="vision-inspiration-row">
+                {item.inspirationImages.map((ref, i) => (
+                  <StoredImage key={i} src={ref} alt={`Inspiration ${i + 1}`} className="vision-inspiration-thumb" />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {item.referenceImage && !item.siteImage && (
+            <div className="vision-reference">
+              <h3 className="vision-reference-label">Reference image</h3>
+              <img src={item.referenceImage} alt="Reference" className="vision-reference-img" />
+            </div>
+          )}
+        </>
       )}
 
-      {item.inspirationImages?.length > 0 && (
-        <div className="vision-reference">
-          <h3 className="vision-reference-label">Inspiration images</h3>
-          <div className="vision-inspiration-row">
-            {item.inspirationImages.map((ref, i) => (
-              <StoredImage key={i} src={ref} alt={`Inspiration ${i + 1}`} className="vision-inspiration-thumb" />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* --- EDIT STATE: shown only to creator --- */}
+      {isOwner && (
+        <>
+          {item.siteImage && (
+            <div className="vision-reference">
+              <h3 className="vision-reference-label">Site photo</h3>
+              <StoredImage src={item.siteImage} alt="Site" className="vision-reference-img" />
+            </div>
+          )}
 
-      {/* Backward compat: show old referenceImage if present */}
-      {item.referenceImage && !item.siteImage && (
-        <div className="vision-reference">
-          <h3 className="vision-reference-label">Reference image</h3>
-          <img src={item.referenceImage} alt="Reference" className="vision-reference-img" />
-        </div>
-      )}
+          {item.inspirationImages?.length > 0 && (
+            <div className="vision-reference">
+              <h3 className="vision-reference-label">Inspiration images</h3>
+              <div className="vision-inspiration-row">
+                {item.inspirationImages.map((ref, i) => (
+                  <StoredImage key={i} src={ref} alt={`Inspiration ${i + 1}`} className="vision-inspiration-thumb" />
+                ))}
+              </div>
+            </div>
+          )}
 
-      {generating && (
-        <div className="vision-generating">
-          <div className="vision-spinner" />
-          <p>Generating your vision&hellip;</p>
-        </div>
-      )}
+          {item.referenceImage && !item.siteImage && (
+            <div className="vision-reference">
+              <h3 className="vision-reference-label">Reference image</h3>
+              <img src={item.referenceImage} alt="Reference" className="vision-reference-img" />
+            </div>
+          )}
 
-      {error && (
-        <div className="vision-error">
-          <p>{error}</p>
-          <button className="vision-retry-btn" onClick={handleGenerate}>Try again</button>
-        </div>
-      )}
+          {generating && (
+            <div className="vision-generating">
+              <div className="vision-spinner" />
+              <p>Generating your vision&hellip;</p>
+            </div>
+          )}
 
-      {hasImages && (
-        <div className="vision-images">
-          {item.generatedImages.map((ref, i) => (
-            <div key={i} className="vision-image-wrap">
-              <StoredImage
-                src={ref}
-                alt={`Vision option ${i + 1}`}
-                className={`vision-image ${selectedIdx === i ? 'vision-image--selected' : ''}`}
-                onClick={() => handleSelectImage(i)}
-              />
-              {item.generatedImages.length > 1 && (
-                <button
-                  className={`vision-select-btn ${selectedIdx === i ? 'vision-select-btn--active' : ''}`}
-                  onClick={() => handleSelectImage(i)}
-                >
-                  {selectedIdx === i ? 'Selected' : 'Select this'}
-                </button>
+          {error && (
+            <div className="vision-error">
+              <p>{error}</p>
+              <button className="vision-retry-btn" onClick={handleGenerate}>Try again</button>
+            </div>
+          )}
+
+          {hasImages && (
+            <div className="vision-images">
+              {item.generatedImages.map((ref, i) => (
+                <div key={i} className="vision-image-wrap">
+                  <StoredImage
+                    src={ref}
+                    alt={`Vision option ${i + 1}`}
+                    className={`vision-image ${selectedIdx === i ? 'vision-image--selected' : ''}`}
+                    onClick={() => handleSelectImage(i)}
+                  />
+                  {item.generatedImages.length > 1 && (
+                    <button
+                      className={`vision-select-btn ${selectedIdx === i ? 'vision-select-btn--active' : ''}`}
+                      onClick={() => handleSelectImage(i)}
+                    >
+                      {selectedIdx === i ? 'Selected' : 'Select this'}
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {revisedPrompt && (
+            <p className="vision-revised">
+              <strong>AI interpreted as:</strong> {revisedPrompt}
+            </p>
+          )}
+
+          {!generating && (
+            <button className="vision-regen-btn" onClick={handleGenerate}>
+              {hasImages ? 'Generate another option' : 'Generate image'}
+            </button>
+          )}
+
+          {!isPublished && (
+            <div className="vision-publish-section">
+              <button
+                className="vision-publish-btn"
+                onClick={handlePublish}
+                disabled={!canPublish}
+              >
+                Publish vision
+              </button>
+              {!canPublish && hasImages && (
+                <p className="vision-publish-hint">Select an image to publish</p>
+              )}
+              {!canPublish && !hasImages && (
+                <p className="vision-publish-hint">Generate an image first</p>
               )}
             </div>
-          ))}
-        </div>
-      )}
-
-      {revisedPrompt && (
-        <p className="vision-revised">
-          <strong>AI interpreted as:</strong> {revisedPrompt}
-        </p>
-      )}
-
-      {!generating && (
-        <button className="vision-regen-btn" onClick={handleGenerate}>
-          {hasImages ? 'Generate another option' : 'Generate image'}
-        </button>
-      )}
-
-      {!isPublished && (
-        <div className="vision-publish-section">
-          <button
-            className="vision-publish-btn"
-            onClick={handlePublish}
-            disabled={!canPublish}
-          >
-            Publish vision
-          </button>
-          {!canPublish && hasImages && (
-            <p className="vision-publish-hint">Select an image to publish</p>
           )}
-          {!canPublish && !hasImages && (
-            <p className="vision-publish-hint">Generate an image first</p>
-          )}
-        </div>
-      )}
 
-      {isPublished && (
-        <div className="vision-publish-section">
-          <span className="vision-published-badge">Published</span>
-          <button className="vision-unpublish-btn" onClick={handleUnpublish}>Unpublish</button>
-        </div>
+          {isPublished && (
+            <div className="vision-publish-section">
+              <span className="vision-published-badge">Published</span>
+              <button className="vision-unpublish-btn" onClick={handleUnpublish}>Unpublish</button>
+            </div>
+          )}
+        </>
       )}
 
       <SocialBar item={item} townSlug={slug} onUpdate={setItem} />
