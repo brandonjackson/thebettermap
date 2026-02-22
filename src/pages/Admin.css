@@ -186,3 +186,99 @@
   font-style: italic;
   padding: 24px 14px !important;
 }
+
+/* Settings panel */
+
+.admin-settings {
+  max-width: 600px;
+}
+
+.admin-settings-section {
+  background: #fff;
+  border: 1px solid #e5e5e0;
+  padding: 24px;
+}
+
+.admin-settings-heading {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #1a1a1a;
+}
+
+.admin-settings-desc {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0 0 20px;
+}
+
+.admin-settings-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.admin-settings-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #e5e5e0;
+  cursor: pointer;
+}
+
+.admin-settings-option:hover {
+  border-color: #ccc;
+  background: #fafaf8;
+}
+
+.admin-settings-option--selected {
+  border-color: #0E602F;
+  background: #f4f9f6;
+}
+
+.admin-settings-option input[type="radio"] {
+  margin-top: 2px;
+  accent-color: #0E602F;
+}
+
+.admin-settings-option-label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+}
+
+.admin-settings-option-desc {
+  display: block;
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.admin-settings-note {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0 0 16px;
+}
+
+.admin-settings-note code {
+  background: #f0f0ec;
+  padding: 1px 5px;
+  font-size: 0.78rem;
+}
+
+.admin-settings-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-settings-saved {
+  font-size: 0.8rem;
+  color: #0E602F;
+  font-weight: 500;
+}
