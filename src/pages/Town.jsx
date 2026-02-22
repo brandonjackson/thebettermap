@@ -88,6 +88,15 @@ export default function Town() {
 
   const markers = items;
 
+  const TYPE_ROUTES = { opportunity: 'improve', vision: 'imagine', celebration: 'celebrate' };
+
+  function handleMarkerClick(item) {
+    const route = TYPE_ROUTES[item.type];
+    if (route) {
+      navigate(`/town/${slug}/${route}/${item.id}`);
+    }
+  }
+
   const filteredItems = activeTab ? items.filter((i) => i.type === activeTab) : items;
 
   function startJourney(type) {
@@ -523,6 +532,7 @@ export default function Town() {
       zoom={14}
       markers={journey ? [] : markers}
       onMoveEnd={handleMoveEnd}
+      onMarkerClick={handleMarkerClick}
       showBullseye={showBullseye}
       onBullseyeMove={(pos) => setPin(pos)}
     />
