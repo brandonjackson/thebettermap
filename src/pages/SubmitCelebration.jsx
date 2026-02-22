@@ -19,7 +19,8 @@ export default function SubmitCelebration() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState({ material: [], era: [], style: [], feeling: [] });
-  const [pin, setPin] = useState({ lat: town.lat, lng: town.lng });
+  const initialPin = location.state?.pin || { lat: town.lat, lng: town.lng };
+  const [pin, setPin] = useState(initialPin);
   const [photoImage, setPhotoImage] = useState(null);
   const [saving, setSaving] = useState(false);
 
@@ -200,7 +201,7 @@ export default function SubmitCelebration() {
 
   const rightPanel = (
     <MapView
-      center={[town.lng, town.lat]}
+      center={[initialPin.lng, initialPin.lat]}
       zoom={15}
       showBullseye
       onBullseyeMove={handleBullseyeMove}
