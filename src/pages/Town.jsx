@@ -184,25 +184,25 @@ export default function Town() {
 
         <div className="town-journeys">
           <button onClick={() => startJourney('improve')} className="town-journey town-journey--improve">
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
             <div>
               <h2>Find something to fix</h2>
               <p>Spot issues and opportunities for improvement</p>
             </div>
+            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
           </button>
           <button onClick={() => startJourney('imagine')} className="town-journey town-journey--imagine">
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
             <div>
               <h2>Imagine something new</h2>
               <p>Envision what this place could become</p>
             </div>
+            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
           </button>
           <button onClick={() => startJourney('celebrate')} className="town-journey town-journey--celebrate">
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
             <div>
               <h2>Record local beauty</h2>
               <p>Map the places that make this area special</p>
             </div>
+            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
           </button>
         </div>
 
