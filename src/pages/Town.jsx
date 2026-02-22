@@ -236,21 +236,21 @@ export default function Town() {
               <h2>Find something to fix</h2>
               <p>Spot issues and opportunities for improvement</p>
             </div>
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
+            <img className="town-journey-arrow" src="/arrow.svg" alt="" />
           </button>
           <button onClick={() => startJourney('imagine')} className="town-journey town-journey--imagine">
             <div>
               <h2>Imagine something new</h2>
               <p>Envision what this place could become</p>
             </div>
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
+            <img className="town-journey-arrow" src="/arrow.svg" alt="" />
           </button>
           <button onClick={() => startJourney('celebrate')} className="town-journey town-journey--celebrate">
             <div>
               <h2>Record local beauty</h2>
               <p>Map the places that make this area special</p>
             </div>
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
+            <img className="town-journey-arrow" src="/arrow.svg" alt="" />
           </button>
         </div>
 
