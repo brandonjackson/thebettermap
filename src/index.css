@@ -33,7 +33,7 @@ body {
 }
 
 a {
-  color: #2D6A4F;
+  color: #0E602F;
 }
 
 /* Shared form styles */
@@ -58,7 +58,7 @@ a {
 }
 
 .form-input:focus {
-  border-color: #2D6A4F;
+  border-color: #0E602F;
 }
 
 .form-textarea {
@@ -68,7 +68,7 @@ a {
 
 .form-submit {
   padding: 12px 24px;
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
   border: none;
   border-radius: 0;
@@ -79,7 +79,7 @@ a {
 }
 
 .form-submit:hover {
-  background: #245A42;
+  background: #0B4D26;
 }
 
 .form-submit:disabled {
@@ -117,13 +117,13 @@ a {
 }
 
 .form-tag:hover {
-  border-color: #2D6A4F;
+  border-color: #0E602F;
 }
 
 .form-tag--selected {
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
-  border-color: #2D6A4F;
+  border-color: #0E602F;
 }
 
 /* Shared detail page styles */
@@ -136,9 +136,9 @@ a {
   margin-bottom: 4px;
 }
 
-.detail-type--opportunity { color: #C45B4A; }
-.detail-type--vision { color: #5B7FC4; }
-.detail-type--celebration { color: #2D6A4F; }
+.detail-type--opportunity { color: #CC0C83; }
+.detail-type--vision { color: #00A4F2; }
+.detail-type--celebration { color: #92C072; }
 
 .detail-title {
   font-family: 'EB Garamond', Georgia, serif;

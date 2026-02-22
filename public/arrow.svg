@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+<svg width="51" height="30" viewBox="0 0 51 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M37.3171 0L34.8293 2.5L46.0244 13.75H0V16.5849H46.0244L34.8293 27.5L37.3171 30L51 16.25V13.75L37.3171 0Z" fill="black"/>
+=======
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" stroke-linejoin="miter">
+  <line x1="4" y1="12" x2="20" y2="12" />
+  <polyline points="14 6 20 12 14 18" />
+>>>>>>> 17d0dfc4ad079d35f52d80a227dedf16bb4fcfbc
+</svg>

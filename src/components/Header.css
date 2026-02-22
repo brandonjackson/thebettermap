@@ -100,7 +100,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
   padding: 2px 6px;
   border-radius: 0;
@@ -123,14 +123,14 @@
 
 .header-link--primary {
   padding: 6px 14px;
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
   border-radius: 0;
 }
 
 .header-link--primary:hover {
   color: #fff;
-  background: #245A42;
+  background: #0B4D26;
 }
 
 /* Mobile: show hamburger, collapse nav into dropdown */

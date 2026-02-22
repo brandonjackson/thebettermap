@@ -30,7 +30,7 @@ export default function Header() {
       </button>
 
       <nav className={`header-nav ${menuOpen ? 'header-nav--open' : ''}`}>
-        <Link to="/about" className="header-link">About</Link>
+        <Link to="/vision" className="header-link">Vision</Link>
         {isLoggedIn ? (
           <>
             <span className="header-user">

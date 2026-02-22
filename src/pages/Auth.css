@@ -37,7 +37,7 @@
 }
 
 .auth-error {
-  color: #C45B4A;
+  color: #CC0C83;
   font-size: 0.85rem;
   margin: 0;
   padding: 8px 12px;
@@ -53,6 +53,6 @@
 }
 
 .auth-switch a {
-  color: #2D6A4F;
+  color: #0E602F;
   font-weight: 500;
 }
