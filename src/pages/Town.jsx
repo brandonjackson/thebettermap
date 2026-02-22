@@ -184,21 +184,21 @@ export default function Town() {
 
         <div className="town-journeys">
           <button onClick={() => startJourney('improve')} className="town-journey town-journey--improve">
-            <span className="town-journey-arrow" />
+            <img src="/arrow.svg" alt="" className="town-journey-arrow" />
             <div>
               <h2>Find something to fix</h2>
               <p>Spot issues and opportunities for improvement</p>
             </div>
           </button>
           <button onClick={() => startJourney('imagine')} className="town-journey town-journey--imagine">
-            <span className="town-journey-arrow" />
+            <img src="/arrow.svg" alt="" className="town-journey-arrow" />
             <div>
               <h2>Imagine something new</h2>
               <p>Envision what this place could become</p>
             </div>
           </button>
           <button onClick={() => startJourney('celebrate')} className="town-journey town-journey--celebrate">
-            <span className="town-journey-arrow" />
+            <img src="/arrow.svg" alt="" className="town-journey-arrow" />
             <div>
               <h2>Record local beauty</h2>
               <p>Map the places that make this area special</p>
