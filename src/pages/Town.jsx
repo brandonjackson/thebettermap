@@ -3,10 +3,12 @@ import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import ItemCard from '../components/ItemCard';
+import MaskCanvas from '../components/MaskCanvas';
 import { useAuth } from '../contexts/AuthContext';
 import { getCelebrationsInBounds, createCelebration } from '../services/celebrations';
 import { getOpportunitiesInBounds, createOpportunity } from '../services/opportunities';
 import { getVisionsInBounds, createVision } from '../services/visions';
+import { saveImage } from '../services/imageStore';
 import { reverseGeocode } from '../services/postcodes';
 import { OPPORTUNITY_CATEGORIES, CELEBRATION_TAGS, DEFAULT_CENTER } from '../config';
 import './Town.css';
@@ -47,7 +49,10 @@ export default function Town() {
   // Form state for "Imagine something new"
   const [visionTitle, setVisionTitle] = useState('');
   const [visionPrompt, setVisionPrompt] = useState('');
-  const [referenceImage, setReferenceImage] = useState(null);
+  const [siteImage, setSiteImage] = useState(null);
+  const [maskImage, setMaskImage] = useState(null);
+  const [inspirationImages, setInspirationImages] = useState([]);
+  const [visionSaving, setVisionSaving] = useState(false);
 
   // Form state for "Record local beauty"
   const [celTitle, setCelTitle] = useState('');
@@ -96,7 +101,10 @@ export default function Town() {
     setOppCategory(OPPORTUNITY_CATEGORIES[0]);
     setVisionTitle('');
     setVisionPrompt('');
-    setReferenceImage(null);
+    setSiteImage(null);
+    setMaskImage(null);
+    setInspirationImages([]);
+    setVisionSaving(false);
     setCelTitle('');
     setCelDescription('');
     setCelTags({ material: [], era: [], style: [], feeling: [] });
@@ -106,12 +114,38 @@ export default function Town() {
     setStep('form');
   }
 
-  function handleReferenceImage(e) {
+  const maxInspirationImages = siteImage ? 3 : 4;
+
+  function handleSiteImage(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setReferenceImage(reader.result);
+    reader.onload = () => {
+      setSiteImage(reader.result);
+      setMaskImage(null);
+    };
     reader.readAsDataURL(file);
+  }
+
+  function removeSiteImage() {
+    setSiteImage(null);
+    setMaskImage(null);
+  }
+
+  function handleInspirationImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (inspirationImages.length >= maxInspirationImages) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setInspirationImages((prev) => [...prev, reader.result]);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
+  function removeInspirationImage(index) {
+    setInspirationImages((prev) => prev.filter((_, i) => i !== index));
   }
 
   function toggleCelTag(category, value) {
@@ -137,19 +171,33 @@ export default function Town() {
     navigate(`/town/${slug}/improve/${item.id}`);
   }
 
-  function handleSubmitVision(e) {
+  async function handleSubmitVision(e) {
     e.preventDefault();
-    if (!visionTitle.trim() || !visionPrompt.trim()) return;
-    const item = createVision({
-      townSlug: slug,
-      title: visionTitle.trim(),
-      prompt: visionPrompt.trim(),
-      lat: pin.lat,
-      lng: pin.lng,
-      referenceImage,
-    });
-    cancelJourney();
-    navigate(`/town/${slug}/imagine/${item.id}`, { state: { town } });
+    if (!visionTitle.trim() || !visionPrompt.trim() || visionSaving) return;
+
+    setVisionSaving(true);
+    try {
+      const siteImageRef = siteImage ? await saveImage(siteImage) : null;
+      const maskImageRef = maskImage ? await saveImage(maskImage) : null;
+      const inspirationRefs = await Promise.all(
+        inspirationImages.map((img) => saveImage(img))
+      );
+
+      const item = createVision({
+        townSlug: slug,
+        title: visionTitle.trim(),
+        prompt: visionPrompt.trim(),
+        lat: pin.lat,
+        lng: pin.lng,
+        siteImage: siteImageRef,
+        maskImage: maskImageRef,
+        inspirationImages: inspirationRefs,
+      });
+      cancelJourney();
+      navigate(`/town/${slug}/imagine/${item.id}`, { state: { town } });
+    } catch {
+      setVisionSaving(false);
+    }
   }
 
   function handleSubmitCelebration(e) {
@@ -317,30 +365,84 @@ export default function Town() {
               placeholder="Describe what you'd love to see here. Be as vivid as you like &mdash; this will generate an image of your vision."
               value={visionPrompt}
               onChange={(e) => setVisionPrompt(e.target.value)}
-              rows={6}
+              rows={4}
               required
             />
           </label>
 
-          <div className="form-label">
-            Reference image <span className="town-optional">(optional)</span>
-            <p className="town-ref-hint">Attach a photo for inspiration &mdash; it won&rsquo;t be used in generation, but helps others understand your idea.</p>
-            <input
-              type="file"
-              accept="image/*"
-              className="form-input"
-              onChange={handleReferenceImage}
-            />
-            {referenceImage && (
-              <div className="town-ref-preview">
-                <img src={referenceImage} alt="Reference preview" />
-                <button type="button" className="town-ref-remove" onClick={() => setReferenceImage(null)}>Remove</button>
+          {/* Site Image Section */}
+          <div className="town-image-section">
+            <div className="town-image-section-header">
+              <span className="town-image-section-title">Site photo</span>
+              <span className="town-optional">(optional)</span>
+            </div>
+            <p className="town-image-section-hint">
+              Upload a photo of the current location. The AI will draw on top of what&rsquo;s already in the scene.
+            </p>
+
+            {!siteImage ? (
+              <label className="town-upload-btn">
+                <span>+ Upload site photo</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSiteImage}
+                  hidden
+                />
+              </label>
+            ) : (
+              <div className="town-site-image">
+                <button type="button" className="town-site-remove" onClick={removeSiteImage}>
+                  Remove photo
+                </button>
+                <p className="town-mask-hint">
+                  Paint over the areas you want the AI to transform. Unpainted areas will be preserved.
+                </p>
+                <MaskCanvas image={siteImage} onMaskChange={setMaskImage} />
               </div>
             )}
           </div>
 
-          <button type="submit" className="form-submit" disabled={!visionTitle.trim() || !visionPrompt.trim()}>
-            Save vision
+          {/* Inspiration Images Section */}
+          <div className="town-image-section">
+            <div className="town-image-section-header">
+              <span className="town-image-section-title">Inspiration images</span>
+              <span className="town-optional">(optional)</span>
+            </div>
+            <p className="town-image-section-hint">
+              Add reference images to guide the style or content of your vision.
+              {' '}Up to {maxInspirationImages} image{maxInspirationImages !== 1 ? 's' : ''}.
+            </p>
+
+            <div className="town-inspiration-grid">
+              {inspirationImages.map((img, i) => (
+                <div key={i} className="town-inspiration-item">
+                  <img src={img} alt={`Inspiration ${i + 1}`} />
+                  <button
+                    type="button"
+                    className="town-inspiration-remove"
+                    onClick={() => removeInspirationImage(i)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+              {inspirationImages.length < maxInspirationImages && (
+                <label className="town-inspiration-add">
+                  <span>+</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleInspirationImage}
+                    hidden
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
+          <button type="submit" className="form-submit" disabled={!visionTitle.trim() || !visionPrompt.trim() || visionSaving}>
+            {visionSaving ? 'Saving\u2026' : 'Save vision'}
           </button>
         </form>
       </div>
