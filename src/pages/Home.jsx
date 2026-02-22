@@ -71,17 +71,17 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home-opener">
-        <h2 className="home-opener-title">Dream it. Share it. Sorted.</h2>
-        <p className="home-opener-body">
+      <div className="home-section home-section--green">
+        <h2 className="home-section-title">Dream it. Share it. Sorted.</h2>
+        <p className="home-section-body">
           We have endless ways to object to things. Almost no way to say what we actually want.
           Progress Map is here to solve Britain's collective imagination problem — a shared canvas
           for picturing better, street by street, and rallying people around that vision.
         </p>
       </div>
 
-      <div className="home-ways">
-        <h2 className="home-ways-title">Three ways to help</h2>
+      <div className="home-section home-section--light">
+        <h2 className="home-section-title">Three ways to help</h2>
         <div className="home-features">
           <div className="home-feature">
             <div className="home-feature-icon home-feature-icon--improve" />
@@ -101,9 +101,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="home-commons">
-        <h2 className="home-commons-title">Part of the digital commons</h2>
-        <p className="home-commons-body">
+      <div className="home-section home-section--green">
+        <h2 className="home-section-title">Part of the digital commons</h2>
+        <p className="home-section-body">
           Progress Map isn't a startup. It's public infrastructure for collective ambition.
           Inspired by the civic visionaries who imagined garden cities, public parks, and the
           NHS — people who saw what Britain could be and made others see it too.

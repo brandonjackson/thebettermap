@@ -6,35 +6,52 @@
   background: #fafaf8;
 }
 
-/* ── Opener ── */
+/* ── Sections (shared) ── */
 
-.home-opener {
+.home-section {
   width: 100%;
-  background: #1a1a1a;
-  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 100px 32px;
+  padding: 96px 40px;
 }
 
-.home-opener-title {
+.home-section--green {
+  background: #2D6A4F;
+  color: #fff;
+}
+
+.home-section--light {
+  background: #fafaf8;
+  color: #1a1a1a;
+}
+
+.home-section-title {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 4.2rem;
+  font-size: 2.4rem;
   font-weight: 600;
-  margin: 0 0 28px;
-  letter-spacing: -0.025em;
-  line-height: 1.1;
-  max-width: 800px;
+  margin: 0 0 24px;
+  letter-spacing: -0.01em;
 }
 
-.home-opener-body {
+.home-section-body {
   max-width: 680px;
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.15rem;
   line-height: 1.7;
   margin: 0;
+}
+
+.home-section--green .home-section-body {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.home-section--light .home-section-title {
+  color: #1a1a1a;
+}
+
+.home-section--light .home-section-body {
+  color: #555;
 }
 
 /* ── Hero with background image ── */
@@ -163,26 +180,6 @@
   color: #fff;
 }
 
-/* ── Three ways to help ── */
-
-.home-ways {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.home-ways-title {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0;
-  padding-top: 80px;
-  text-align: center;
-  letter-spacing: -0.01em;
-}
-
 /* ── Features ── */
 
 .home-features {
@@ -190,7 +187,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   max-width: 1080px;
-  padding: 40px 40px 96px;
+  padding: 40px 0 0;
   width: 100%;
 }
 
@@ -234,36 +231,6 @@
 
 .home-feature-icon--celebrate {
   background: #2D6A4F;
-}
-
-/* ── Digital commons ── */
-
-.home-commons {
-  width: 100%;
-  background: #2D6A4F;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 96px 40px;
-}
-
-.home-commons-title {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 2.4rem;
-  font-weight: 600;
-  margin: 0 0 24px;
-  letter-spacing: -0.01em;
-  text-align: center;
-}
-
-.home-commons-body {
-  max-width: 680px;
-  font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.85);
-  line-height: 1.7;
-  margin: 0;
-  text-align: center;
 }
 
 /* ── Footer ── */
@@ -312,34 +279,17 @@
     padding: 14px 24px;
   }
 
-  .home-opener {
+  .home-section {
     padding: 64px 20px;
   }
 
-  .home-opener-title {
-    font-size: 2.6rem;
-  }
-
-  .home-opener-body {
-    font-size: 1.05rem;
-  }
-
-  .home-ways-title {
-    padding-top: 56px;
+  .home-section-title {
     font-size: 1.8rem;
   }
 
   .home-features {
     grid-template-columns: 1fr;
     gap: 20px;
-    padding: 28px 20px 56px;
-  }
-
-  .home-commons {
-    padding: 64px 20px;
-  }
-
-  .home-commons-title {
-    font-size: 1.8rem;
+    padding: 28px 0 0;
   }
 }
