@@ -181,7 +181,7 @@ export default function SubmitCelebration() {
           <p style={{ fontSize: '0.75rem', color: '#888', marginTop: 8, lineHeight: 1.4 }}>
             Need help finding an image? Check out this location on{' '}
             <a
-              href={`https://www.geograph.org.uk/mapper/combined.php#13/${pin.lat.toFixed(4)}/${pin.lng.toFixed(4)}`}
+              href={`https://www.geograph.org.uk/mapper/combined.php#15/${pin.lat.toFixed(4)}/${pin.lng.toFixed(4)}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: '#5B7FC4' }}
