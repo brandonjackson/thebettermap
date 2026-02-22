@@ -5,6 +5,8 @@ import MapView from '../components/MapView';
 import SocialBar from '../components/SocialBar';
 import { getVisionById, updateVision } from '../services/visions';
 import { generateImage } from '../services/imageGeneration';
+import { saveImage } from '../services/imageStore';
+import StoredImage from '../components/StoredImage';
 import { DEFAULT_CENTER } from '../config';
 import './VisionDetail.css';
 
@@ -40,8 +42,9 @@ export default function VisionDetail() {
 
     try {
       const result = await generateImage(fullPrompt);
+      const refs = await Promise.all(result.images.map(saveImage));
       const updated = updateVision(item.id, {
-        generatedImages: [...item.generatedImages, ...result.images],
+        generatedImages: [...item.generatedImages, ...refs],
       });
       setItem(updated);
       if (result.revisedPrompt) {
@@ -126,10 +129,10 @@ export default function VisionDetail() {
 
       {hasImages && (
         <div className="vision-images">
-          {item.generatedImages.map((url, i) => (
+          {item.generatedImages.map((ref, i) => (
             <div key={i} className="vision-image-wrap">
-              <img
-                src={url}
+              <StoredImage
+                src={ref}
                 alt={`Vision option ${i + 1}`}
                 className={`vision-image ${selectedIdx === i ? 'vision-image--selected' : ''}`}
                 onClick={() => handleSelectImage(i)}

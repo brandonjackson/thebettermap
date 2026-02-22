@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { getBackerCount } from '../services/social';
+import StoredImage from './StoredImage';
 import './ItemCard.css';
 
 const TYPE_LABELS = {
@@ -34,7 +35,7 @@ export default function ItemCard({ item, townSlug, basePath }) {
     <Link to={linkTo} className="item-card">
       <div className="item-card-photo">
         {thumbnail ? (
-          <img src={thumbnail} alt={item.title} />
+          <StoredImage src={thumbnail} alt={item.title} />
         ) : (
           <div className="item-card-photo-placeholder" style={{ borderColor: TYPE_COLORS[item.type] }}>
             <span style={{ color: TYPE_COLORS[item.type] }}>{TYPE_LABELS[item.type]}</span>
