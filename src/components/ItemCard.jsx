@@ -12,7 +12,7 @@ const TYPE_LABELS = {
 const TYPE_COLORS = {
   opportunity: '#CC0C83',
   vision: '#00A4F2',
-  celebration: '#0E602F',
+  celebration: '#92C072',
 };
 
 function getThumbnail(item) {
