@@ -1,0 +1,193 @@
+/* ── Layout ──────────────────────────────────────────── */
+
+.vision {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  background: #fafaf8;
+  padding: 64px 24px 80px;
+  overflow-y: auto;
+}
+
+.vision-article {
+  max-width: 680px;
+  width: 100%;
+}
+
+/* ── Hero ────────────────────────────────────────────── */
+
+.vision-hero {
+  margin-bottom: 48px;
+}
+
+.vision-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #C45B4A;
+  margin: 0 0 12px;
+}
+
+.vision-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 20px;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.vision-subtitle {
+  font-size: 1.15rem;
+  line-height: 1.75;
+  color: #444;
+  margin: 0;
+}
+
+/* ── Headline stat ───────────────────────────────────── */
+
+.vision-stat-block {
+  margin: 0 0 48px;
+  padding: 40px 0;
+  border-top: 2px solid #1a1a1a;
+  border-bottom: 1px solid #e5e5e0;
+}
+
+.vision-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vision-stat-number {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #1a1a1a;
+}
+
+.vision-stat-label {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #666;
+  max-width: 320px;
+}
+
+/* ── Sections ────────────────────────────────────────── */
+
+.vision-section {
+  margin-bottom: 40px;
+}
+
+.vision-section-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 12px;
+}
+
+.vision-section p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #333;
+  margin: 0 0 16px;
+}
+
+.vision-section p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Chart ───────────────────────────────────────────── */
+
+.vision-chart-intro {
+  font-size: 0.95rem !important;
+  color: #666 !important;
+  margin-bottom: 20px !important;
+}
+
+.vision-chart-wrapper {
+  margin: 0 -8px 8px;
+}
+
+.vision-chart-source {
+  font-size: 0.8rem !important;
+  color: #999 !important;
+  margin-top: 4px !important;
+}
+
+.vision-tooltip {
+  background: #fff;
+  border: 1px solid #e5e5e0;
+  padding: 10px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.vision-tooltip-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0 0 4px;
+}
+
+.vision-tooltip-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* ── Pull quote ──────────────────────────────────────── */
+
+.vision-pullquote {
+  margin: 48px 0;
+  padding: 32px 0;
+  border-top: 2px solid #2D6A4F;
+  border-bottom: 1px solid #e5e5e0;
+}
+
+.vision-pullquote p {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 2rem;
+  font-weight: 500;
+  font-style: italic;
+  line-height: 1.35;
+  color: #2D6A4F;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* ── Call to action ──────────────────────────────────── */
+
+.vision-cta {
+  margin-top: 8px;
+}
+
+.vision-closing {
+  font-size: 1.15rem !important;
+  margin-top: 24px !important;
+  color: #1a1a1a !important;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .vision {
+    padding: 40px 16px 60px;
+  }
+
+  .vision-title {
+    font-size: 2.2rem;
+  }
+
+  .vision-stat-number {
+    font-size: 3.5rem;
+  }
+
+  .vision-pullquote p {
+    font-size: 1.5rem;
+  }
+}

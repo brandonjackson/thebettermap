@@ -13,7 +13,7 @@ export default function Header() {
       </Link>
 
       <nav className="header-nav">
-        <Link to="/about" className="header-link">About</Link>
+        <Link to="/vision" className="header-link">Vision</Link>
         {isLoggedIn ? (
           <>
             <span className="header-user">
