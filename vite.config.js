@@ -1,5 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+import fs from 'node:fs'
+import path from 'node:path'
 
 function dataUrlToBlob(dataUrl) {
   const [header, base64Data] = dataUrl.split(',');
@@ -12,6 +14,79 @@ function mimeToExt(mime) {
   const map = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/webp': '.webp', 'image/gif': '.gif' };
   return map[mime] || '.png';
 }
+
+// --- Request logging helpers ---
+
+function createLogDir() {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const logDir = path.join(process.cwd(), 'logs', timestamp);
+  fs.mkdirSync(logDir, { recursive: true });
+  return logDir;
+}
+
+function saveBase64ToFile(filePath, dataUrl) {
+  const [header, base64Data] = dataUrl.split(',');
+  const mime = header.match(/data:([^;]+)/)?.[1] || 'image/png';
+  const ext = mimeToExt(mime);
+  const fullPath = `${filePath}${ext}`;
+  fs.writeFileSync(fullPath, Buffer.from(base64Data, 'base64'));
+  return path.basename(fullPath);
+}
+
+function logInputs(logDir, { prompt, siteImage, mask, inspirationImages, endpoint }) {
+  const savedFiles = [];
+
+  if (siteImage) {
+    savedFiles.push({ type: 'siteImage', file: saveBase64ToFile(path.join(logDir, 'input_site'), siteImage) });
+  }
+  if (mask) {
+    savedFiles.push({ type: 'mask', file: saveBase64ToFile(path.join(logDir, 'input_mask'), mask) });
+  }
+  if (inspirationImages?.length) {
+    inspirationImages.forEach((img, i) => {
+      savedFiles.push({ type: `inspiration_${i}`, file: saveBase64ToFile(path.join(logDir, `input_inspiration_${i}`), img) });
+    });
+  }
+
+  fs.writeFileSync(path.join(logDir, 'request.json'), JSON.stringify({
+    timestamp: new Date().toISOString(),
+    endpoint,
+    prompt,
+    hasSiteImage: !!siteImage,
+    hasMask: !!mask,
+    inspirationImageCount: inspirationImages?.length || 0,
+    inputFiles: savedFiles,
+  }, null, 2));
+}
+
+function logResponse(logDir, { statusCode, apiResponse, clientResponse }) {
+  const sanitized = JSON.parse(JSON.stringify(apiResponse));
+
+  // Save output images as files and strip base64 from the JSON
+  if (sanitized.data) {
+    sanitized.data.forEach((d, i) => {
+      if (d.b64_json) {
+        fs.writeFileSync(
+          path.join(logDir, `output_${i}.png`),
+          Buffer.from(d.b64_json, 'base64'),
+        );
+        d.b64_json = `[saved to output_${i}.png]`;
+      }
+    });
+  }
+
+  fs.writeFileSync(path.join(logDir, 'response.json'), JSON.stringify({
+    statusCode,
+    apiResponse: sanitized,
+    clientResponse: clientResponse
+      ? { ...clientResponse, images: clientResponse.images?.map((img) =>
+          img.startsWith('data:') ? `[base64 image, ${img.length} chars]` : img
+        ) }
+      : undefined,
+  }, null, 2));
+}
+
+// --- Vite plugin ---
 
 function imageGenerationPlugin(env) {
   return {
@@ -46,12 +121,24 @@ function imageGenerationPlugin(env) {
           return;
         }
 
+        // Create log directory for this request
+        let logDir;
+        try {
+          logDir = createLogDir();
+          console.log(`[image-gen] Logging request to ${logDir}`);
+        } catch (e) {
+          console.error('[image-gen] Failed to create log directory:', e);
+        }
+
         try {
           const hasImages = siteImage || (inspirationImages && inspirationImages.length > 0);
 
           let response;
+          let endpoint;
 
           if (hasImages) {
+            endpoint = 'https://api.openai.com/v1/images/edits';
+
             // Use the edits endpoint with multipart form data
             const formData = new FormData();
             formData.append('model', 'gpt-image-1');
@@ -76,7 +163,7 @@ function imageGenerationPlugin(env) {
               });
             }
 
-            response = await fetch('https://api.openai.com/v1/images/edits', {
+            response = await fetch(endpoint, {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${apiKey}`,
@@ -84,8 +171,10 @@ function imageGenerationPlugin(env) {
               body: formData,
             });
           } else {
+            endpoint = 'https://api.openai.com/v1/images/generations';
+
             // Text-only: use the generations endpoint
-            response = await fetch('https://api.openai.com/v1/images/generations', {
+            response = await fetch(endpoint, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -100,21 +189,49 @@ function imageGenerationPlugin(env) {
             });
           }
 
+          // Log inputs (done after fetch starts but doesn't block response)
+          if (logDir) {
+            try {
+              logInputs(logDir, { prompt, siteImage, mask, inspirationImages, endpoint });
+            } catch (e) {
+              console.error('[image-gen] Failed to log inputs:', e);
+            }
+          }
+
           const data = await response.json();
 
           if (!response.ok) {
+            if (logDir) {
+              try { logResponse(logDir, { statusCode: response.status, apiResponse: data }); } catch (e) { console.error('[image-gen] Failed to log response:', e); }
+            }
             res.statusCode = response.status;
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ error: data.error?.message || 'Image generation failed' }));
             return;
           }
 
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({
+          const clientResponse = {
             images: data.data.map((d) => d.url || `data:image/png;base64,${d.b64_json}`),
             revisedPrompt: data.data[0]?.revised_prompt || null,
-          }));
+          };
+
+          if (logDir) {
+            try { logResponse(logDir, { statusCode: response.status, apiResponse: data, clientResponse }); } catch (e) { console.error('[image-gen] Failed to log response:', e); }
+          }
+
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(clientResponse));
         } catch (err) {
+          if (logDir) {
+            try {
+              fs.writeFileSync(path.join(logDir, 'error.json'), JSON.stringify({
+                error: err.message,
+                stack: err.stack,
+              }, null, 2));
+            } catch (e) {
+              console.error('[image-gen] Failed to log error:', e);
+            }
+          }
           res.statusCode = 500;
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({ error: err.message }));
