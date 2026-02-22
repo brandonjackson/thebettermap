@@ -1,3 +1,13 @@
+.vision-hero {
+  margin-bottom: 20px;
+}
+
+.vision-hero-img {
+  width: 100%;
+  display: block;
+  border: 1px solid #e5e5e0;
+}
+
 .vision-generating {
   display: flex;
   align-items: center;
