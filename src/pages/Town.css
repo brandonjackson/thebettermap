@@ -46,23 +46,25 @@
   transform: translateY(-1px);
 }
 
-.town-journey-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 0;
+.town-journey-arrow {
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
+  display: inline-block;
+  -webkit-mask: url('/arrow.svg') no-repeat center / contain;
+  mask: url('/arrow.svg') no-repeat center / contain;
 }
 
-.town-journey--improve .town-journey-icon {
-  background: #CC0C83;
+.town-journey--improve .town-journey-arrow {
+  background-color: #CC0C83;
 }
 
-.town-journey--imagine .town-journey-icon {
-  background: #00A4F2;
+.town-journey--imagine .town-journey-arrow {
+  background-color: #00A4F2;
 }
 
-.town-journey--celebrate .town-journey-icon {
-  background: #0E602F;
+.town-journey--celebrate .town-journey-arrow {
+  background-color: #92C072;
 }
 
 .town-journey h2 {
