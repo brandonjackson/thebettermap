@@ -66,6 +66,8 @@ export default function Town() {
   const [celTitle, setCelTitle] = useState('');
   const [celDescription, setCelDescription] = useState('');
   const [celTags, setCelTags] = useState({ material: [], era: [], style: [], feeling: [] });
+  const [celPhoto, setCelPhoto] = useState(null);
+  const [celSaving, setCelSaving] = useState(false);
 
   const handleMoveEnd = useCallback((b) => {
     setBounds(b);
@@ -116,6 +118,8 @@ export default function Town() {
     setCelTitle('');
     setCelDescription('');
     setCelTags({ material: [], era: [], style: [], feeling: [] });
+    setCelPhoto(null);
+    setCelSaving(false);
   }
 
   function confirmLocation() {
@@ -208,19 +212,35 @@ export default function Town() {
     }
   }
 
-  function handleSubmitCelebration(e) {
+  function handleCelPhoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setCelPhoto(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  async function handleSubmitCelebration(e) {
     e.preventDefault();
-    if (!celTitle.trim() || !celDescription.trim()) return;
-    const item = createCelebration({
-      townSlug: slug,
-      title: celTitle.trim(),
-      description: celDescription.trim(),
-      tags: celTags,
-      lat: pin.lat,
-      lng: pin.lng,
-    });
-    cancelJourney();
-    navigate(`/town/${slug}/celebrate/${item.id}`);
+    if (!celTitle.trim() || !celDescription.trim() || celSaving) return;
+
+    setCelSaving(true);
+    try {
+      const photoRef = celPhoto ? await saveImage(celPhoto) : null;
+      const item = createCelebration({
+        townSlug: slug,
+        title: celTitle.trim(),
+        description: celDescription.trim(),
+        tags: celTags,
+        lat: pin.lat,
+        lng: pin.lng,
+        photoUrl: photoRef,
+      });
+      cancelJourney();
+      navigate(`/town/${slug}/celebrate/${item.id}`);
+    } catch {
+      setCelSaving(false);
+    }
   }
 
   const journeyLabels = {
@@ -507,8 +527,62 @@ export default function Town() {
             </div>
           ))}
 
-          <button type="submit" className="form-submit" disabled={!celTitle.trim() || !celDescription.trim()}>
-            Save
+          {/* Photo upload */}
+          <div className="town-image-section">
+            <div className="town-image-section-header">
+              <span className="town-image-section-title">Photo</span>
+              <span className="town-optional">(optional)</span>
+            </div>
+
+            {!celPhoto ? (
+              <label className="town-upload-btn">
+                <span>+ Upload photo</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCelPhoto}
+                  hidden
+                />
+              </label>
+            ) : (
+              <div style={{ position: 'relative', marginBottom: 8 }}>
+                <img
+                  src={celPhoto}
+                  alt="Upload preview"
+                  style={{ width: '100%', maxHeight: 240, objectFit: 'cover', display: 'block', border: '1px solid #e5e5e0' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setCelPhoto(null)}
+                  style={{
+                    position: 'absolute', top: 8, right: 8,
+                    width: 24, height: 24,
+                    background: 'rgba(0,0,0,0.6)', color: '#fff',
+                    border: 'none', borderRadius: '50%',
+                    fontSize: '0.85rem', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+                  }}
+                >
+                  &times;
+                </button>
+              </div>
+            )}
+
+            <p style={{ fontSize: '0.75rem', color: '#888', marginTop: 8, lineHeight: 1.4 }}>
+              Need help finding an image? Check out this location on{' '}
+              <a
+                href={`https://www.geograph.org.uk/mapper/combined.php#13/${pin.lat.toFixed(4)}/${pin.lng.toFixed(4)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#5B7FC4' }}
+              >
+                Geograph
+              </a>.
+            </p>
+          </div>
+
+          <button type="submit" className="form-submit" disabled={!celTitle.trim() || !celDescription.trim() || celSaving}>
+            {celSaving ? 'Saving\u2026' : 'Save'}
           </button>
         </form>
       </div>
