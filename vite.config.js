@@ -40,7 +40,16 @@ function logInputs(logDir, { prompt, siteImage, mask, inspirationImages, endpoin
     savedFiles.push({ type: 'siteImage', file: saveBase64ToFile(path.join(logDir, 'input_site'), siteImage) });
   }
   if (mask) {
-    savedFiles.push({ type: 'mask', file: saveBase64ToFile(path.join(logDir, 'input_mask'), mask) });
+    const maskFile = saveBase64ToFile(path.join(logDir, 'input_mask'), mask);
+    savedFiles.push({ type: 'mask', file: maskFile });
+
+    // Save an HTML preview that shows transparent areas on a checkered background
+    // so you can verify the mask actually has alpha holes (transparent on white = invisible)
+    fs.writeFileSync(path.join(logDir, 'mask_preview.html'),
+      `<!DOCTYPE html><html><head><title>Mask Preview</title></head>` +
+      `<body style="margin:0;background:repeating-conic-gradient(#999 0% 25%,#666 0% 50%) 50%/20px 20px">` +
+      `<img src="${maskFile}" style="max-width:100vw;max-height:100vh;display:block">` +
+      `</body></html>`);
   }
   if (inspirationImages?.length) {
     inspirationImages.forEach((img, i) => {
