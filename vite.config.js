@@ -42,7 +42,7 @@ function imageGenerationPlugin(env) {
               'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-              model: 'dall-e-3',
+              model: 'chatgpt-image-latest',
               prompt: prompt,
               n: 1,
               size: '1024x1024',
@@ -60,7 +60,7 @@ function imageGenerationPlugin(env) {
 
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify({
-            images: data.data.map((d) => d.url),
+            images: data.data.map((d) => d.url || `data:image/png;base64,${d.b64_json}`),
             revisedPrompt: data.data[0]?.revised_prompt || null,
           }));
         } catch (err) {

@@ -36,7 +36,7 @@ export default function VisionDetail() {
     setError('');
 
     const locationPrefix = `In ${town.name}, `;
-    const fullPrompt = locationPrefix + item.prompt;
+    const fullPrompt = `Photorealistic photograph: ${locationPrefix}${item.prompt}. The output should be photorealistic.`;
 
     try {
       const result = await generateImage(fullPrompt);
@@ -149,7 +149,7 @@ export default function VisionDetail() {
 
       {revisedPrompt && (
         <p className="vision-revised">
-          <strong>DALL-E interpreted as:</strong> {revisedPrompt}
+          <strong>AI interpreted as:</strong> {revisedPrompt}
         </p>
       )}
 
