@@ -47,24 +47,21 @@
 }
 
 .town-journey-arrow {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
-  display: inline-block;
-  -webkit-mask: url('/arrow.svg') no-repeat center / contain;
-  mask: url('/arrow.svg') no-repeat center / contain;
 }
 
 .town-journey--improve .town-journey-arrow {
-  background-color: #CC0C83;
+  filter: brightness(0) saturate(100%) invert(16%) sepia(82%) saturate(5765%) hue-rotate(320deg) brightness(87%) contrast(105%);
 }
 
 .town-journey--imagine .town-journey-arrow {
-  background-color: #00A4F2;
+  filter: brightness(0) saturate(100%) invert(46%) sepia(98%) saturate(2358%) hue-rotate(184deg) brightness(101%) contrast(106%);
 }
 
 .town-journey--celebrate .town-journey-arrow {
-  background-color: #92C072;
+  filter: brightness(0) saturate(100%) invert(73%) sepia(17%) saturate(1070%) hue-rotate(68deg) brightness(92%) contrast(84%);
 }
 
 .town-journey h2 {
