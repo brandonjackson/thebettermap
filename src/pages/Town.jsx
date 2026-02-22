@@ -110,6 +110,20 @@ export default function Town() {
     setPin({ lat: town.lat, lng: town.lng });
   }
 
+  function handleContextMenuAction(type, coords) {
+    if (!isLoggedIn) {
+      navigate('/login', { state: { returnTo: location.pathname } });
+      return;
+    }
+    if (type === 'celebrate') {
+      navigate(`/town/${slug}/celebrate/submit`, { state: { town } });
+      return;
+    }
+    setJourney(type);
+    setStep('place');
+    setPin(coords);
+  }
+
   function cancelJourney() {
     setJourney(null);
     setStep(null);
@@ -451,6 +465,7 @@ export default function Town() {
       onMarkerClick={handleMarkerClick}
       showBullseye={showBullseye}
       onBullseyeMove={(pos) => setPin(pos)}
+      onContextMenuAction={!journey ? handleContextMenuAction : undefined}
     />
   );
 
