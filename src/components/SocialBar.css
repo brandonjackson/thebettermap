@@ -12,7 +12,7 @@
 .social-btn {
   padding: 8px 16px;
   border: 1px solid #e5e5e0;
-  border-radius: 6px;
+  border-radius: 0;
   background: #fff;
   font-size: 0.85rem;
   cursor: pointer;
@@ -53,7 +53,7 @@
 .social-comment {
   padding: 12px;
   background: #fafaf8;
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .social-comment-author {
@@ -83,7 +83,7 @@
   flex: 1;
   padding: 8px 12px;
   border: 1px solid #e5e5e0;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 0.85rem;
   outline: none;
 }
@@ -97,7 +97,7 @@
   background: #2D6A4F;
   color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 0.85rem;
   cursor: pointer;
 }

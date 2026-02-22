@@ -5,7 +5,7 @@
   padding: 24px;
   background: #f5f5f2;
   border: 1px dashed #ddd;
-  border-radius: 8px;
+  border-radius: 0;
   margin-bottom: 16px;
 }
 
@@ -33,7 +33,7 @@
   padding: 16px;
   background: #fef2f0;
   border: 1px solid #e8ccc8;
-  border-radius: 8px;
+  border-radius: 0;
   margin-bottom: 16px;
 }
 
@@ -47,7 +47,7 @@
   padding: 6px 14px;
   background: #fff;
   border: 1px solid #C45B4A;
-  border-radius: 6px;
+  border-radius: 0;
   color: #C45B4A;
   font-size: 0.8rem;
   cursor: pointer;
@@ -71,7 +71,7 @@
 
 .vision-image {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 0;
   cursor: pointer;
   border: 2px solid transparent;
   transition: border-color 0.15s ease;
@@ -93,7 +93,7 @@
   padding: 6px 12px;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid #e5e5e0;
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
@@ -121,7 +121,7 @@
   margin: 0 0 16px;
   padding: 10px 12px;
   background: #f5f5f2;
-  border-radius: 6px;
+  border-radius: 0;
 }
 
 .vision-revised strong {
@@ -133,7 +133,7 @@
   padding: 10px 20px;
   background: #fff;
   border: 1px solid #5B7FC4;
-  border-radius: 8px;
+  border-radius: 0;
   color: #5B7FC4;
   font-size: 0.85rem;
   font-weight: 500;
@@ -157,7 +157,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: 4px;
+  border-radius: 0;
   margin-bottom: 8px;
   margin-right: 8px;
 }
@@ -169,7 +169,7 @@
   margin: 16px 0;
   padding: 16px;
   background: #f5f5f2;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 .vision-publish-btn {
@@ -177,7 +177,7 @@
   background: #2D6A4F;
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
@@ -209,14 +209,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 .vision-unpublish-btn {
   padding: 6px 14px;
   background: #fff;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 0;
   color: #666;
   font-size: 0.8rem;
   cursor: pointer;
@@ -242,7 +242,7 @@
 .vision-reference-img {
   width: 100%;
   max-width: 300px;
-  border-radius: 8px;
+  border-radius: 0;
   border: 1px solid #e5e5e0;
   display: block;
 }
