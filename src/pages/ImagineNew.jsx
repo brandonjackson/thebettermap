@@ -3,8 +3,10 @@ import { useState, useCallback, useMemo } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import ItemCard from '../components/ItemCard';
+import MaskCanvas from '../components/MaskCanvas';
 import { useAuth } from '../contexts/AuthContext';
 import { createVision, getVisionsInBounds } from '../services/visions';
+import { saveImage } from '../services/imageStore';
 import { DEFAULT_CENTER } from '../config';
 import './ImagineNew.css';
 
@@ -23,8 +25,13 @@ export default function ImagineNew() {
   const [pin, setPin] = useState({ lat: town.lat, lng: town.lng });
   const [title, setTitle] = useState('');
   const [prompt, setPrompt] = useState('');
-  const [referenceImage, setReferenceImage] = useState(null);
+  const [siteImage, setSiteImage] = useState(null);
+  const [maskImage, setMaskImage] = useState(null);
+  const [inspirationImages, setInspirationImages] = useState([]);
+  const [saving, setSaving] = useState(false);
   const [bounds, setBounds] = useState(null);
+
+  const maxInspirationImages = siteImage ? 3 : 4;
 
   const handleMoveEnd = useCallback((b) => {
     setBounds(b);
@@ -40,28 +47,66 @@ export default function ImagineNew() {
     );
   }, [bounds, slug]);
 
-  function handleReferenceImage(e) {
+  function handleSiteImage(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setReferenceImage(reader.result);
+    reader.onload = () => {
+      setSiteImage(reader.result);
+      setMaskImage(null);
+    };
     reader.readAsDataURL(file);
   }
 
-  function handleSubmit(e) {
+  function removeSiteImage() {
+    setSiteImage(null);
+    setMaskImage(null);
+  }
+
+  function handleInspirationImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (inspirationImages.length >= maxInspirationImages) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      setInspirationImages((prev) => [...prev, reader.result]);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
+  function removeInspirationImage(index) {
+    setInspirationImages((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (!title.trim() || !prompt.trim()) return;
+    if (!title.trim() || !prompt.trim() || saving) return;
 
-    const item = createVision({
-      townSlug: slug,
-      title: title.trim(),
-      prompt: prompt.trim(),
-      lat: pin.lat,
-      lng: pin.lng,
-      referenceImage,
-    });
+    setSaving(true);
+    try {
+      // Save images to IndexedDB to avoid localStorage size limits
+      const siteImageRef = siteImage ? await saveImage(siteImage) : null;
+      const maskImageRef = maskImage ? await saveImage(maskImage) : null;
+      const inspirationRefs = await Promise.all(
+        inspirationImages.map((img) => saveImage(img))
+      );
 
-    navigate(`/town/${slug}/imagine/${item.id}`, { state: { town } });
+      const item = createVision({
+        townSlug: slug,
+        title: title.trim(),
+        prompt: prompt.trim(),
+        lat: pin.lat,
+        lng: pin.lng,
+        siteImage: siteImageRef,
+        maskImage: maskImageRef,
+        inspirationImages: inspirationRefs,
+      });
+
+      navigate(`/town/${slug}/imagine/${item.id}`, { state: { town } });
+    } catch {
+      setSaving(false);
+    }
   }
 
   function handleMarkerClick(item) {
@@ -143,30 +188,84 @@ export default function ImagineNew() {
               placeholder="Describe what you'd love to see here. Be as vivid as you like &mdash; this will generate an image of your vision."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              rows={6}
+              rows={4}
               required
             />
           </label>
 
-          <div className="form-label">
-            Reference image <span className="imagine-optional">(optional)</span>
-            <p className="imagine-ref-hint">Attach a photo for inspiration &mdash; it won&rsquo;t be used in generation, but helps others understand your idea.</p>
-            <input
-              type="file"
-              accept="image/*"
-              className="form-input"
-              onChange={handleReferenceImage}
-            />
-            {referenceImage && (
-              <div className="imagine-ref-preview">
-                <img src={referenceImage} alt="Reference preview" />
-                <button type="button" className="imagine-ref-remove" onClick={() => setReferenceImage(null)}>Remove</button>
+          {/* Site Image Section */}
+          <div className="imagine-section">
+            <div className="imagine-section-header">
+              <span className="imagine-section-title">Site photo</span>
+              <span className="imagine-optional">(optional)</span>
+            </div>
+            <p className="imagine-section-hint">
+              Upload a photo of the current location. The AI will draw on top of what&rsquo;s already in the scene.
+            </p>
+
+            {!siteImage ? (
+              <label className="imagine-upload-btn">
+                <span>+ Upload site photo</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSiteImage}
+                  hidden
+                />
+              </label>
+            ) : (
+              <div className="imagine-site-image">
+                <button type="button" className="imagine-site-remove" onClick={removeSiteImage}>
+                  Remove photo
+                </button>
+                <p className="imagine-mask-hint">
+                  Paint over the areas you want the AI to transform. Unpainted areas will be preserved.
+                </p>
+                <MaskCanvas image={siteImage} onMaskChange={setMaskImage} />
               </div>
             )}
           </div>
 
-          <button type="submit" className="form-submit" disabled={!title.trim() || !prompt.trim()}>
-            Save vision
+          {/* Inspiration Images Section */}
+          <div className="imagine-section">
+            <div className="imagine-section-header">
+              <span className="imagine-section-title">Inspiration images</span>
+              <span className="imagine-optional">(optional)</span>
+            </div>
+            <p className="imagine-section-hint">
+              Add reference images to guide the style or content of your vision.
+              {' '}Up to {maxInspirationImages} image{maxInspirationImages !== 1 ? 's' : ''}.
+            </p>
+
+            <div className="imagine-inspiration-grid">
+              {inspirationImages.map((img, i) => (
+                <div key={i} className="imagine-inspiration-item">
+                  <img src={img} alt={`Inspiration ${i + 1}`} />
+                  <button
+                    type="button"
+                    className="imagine-inspiration-remove"
+                    onClick={() => removeInspirationImage(i)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+              {inspirationImages.length < maxInspirationImages && (
+                <label className="imagine-inspiration-add">
+                  <span>+</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleInspirationImage}
+                    hidden
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
+          <button type="submit" className="form-submit" disabled={!title.trim() || !prompt.trim() || saving}>
+            {saving ? 'Saving\u2026' : 'Save vision'}
           </button>
         </form>
       </div>

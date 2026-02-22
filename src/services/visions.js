@@ -14,7 +14,7 @@ export function getVisionById(id) {
   return getCollection(KEY).find((v) => v.id === id) || null;
 }
 
-export function createVision({ townSlug, title, prompt, lat, lng, referenceImage }) {
+export function createVision({ townSlug, title, prompt, lat, lng, referenceImage, siteImage, maskImage, inspirationImages }) {
   const items = getCollection(KEY);
   const item = {
     id: crypto.randomUUID(),
@@ -23,6 +23,9 @@ export function createVision({ townSlug, title, prompt, lat, lng, referenceImage
     title,
     prompt,
     referenceImage: referenceImage || null,
+    siteImage: siteImage || null,
+    maskImage: maskImage || null,
+    inspirationImages: inspirationImages || [],
     generatedImages: [],
     selectedImageIndex: null,
     published: false,
