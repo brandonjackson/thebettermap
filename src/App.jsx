@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Town from './pages/Town';
 import SubmitOpportunity from './pages/SubmitOpportunity';
 import OpportunityDetail from './pages/OpportunityDetail';
+import ImagineNew from './pages/ImagineNew';
 import VisionDetail from './pages/VisionDetail';
 import SubmitCelebration from './pages/SubmitCelebration';
 import CelebrationDetail from './pages/CelebrationDetail';
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="/town/:slug" element={<Town />} />
             <Route path="/town/:slug/improve/submit" element={<RequireAuth><SubmitOpportunity /></RequireAuth>} />
             <Route path="/town/:slug/improve/:id" element={<OpportunityDetail />} />
+            <Route path="/town/:slug/imagine" element={<ImagineNew />} />
             <Route path="/town/:slug/imagine/:id" element={<VisionDetail />} />
             <Route path="/town/:slug/celebrate/submit" element={<RequireAuth><SubmitCelebration /></RequireAuth>} />
             <Route path="/town/:slug/celebrate/:id" element={<CelebrationDetail />} />
