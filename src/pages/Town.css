@@ -35,6 +35,9 @@
   text-decoration: none;
   color: inherit;
   transition: all 0.15s ease;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
 }
 
 .town-journey:hover {
@@ -106,4 +109,88 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Inline journey steps */
+
+.town-step-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: #1a1a1a;
+}
+
+.town-step-subtitle {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.town-step-instructions {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.town-confirm-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.town-confirm-btn:hover {
+  background: #333;
+}
+
+.town-optional {
+  font-weight: 400;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.town-ref-hint {
+  font-size: 0.8rem;
+  color: #888;
+  line-height: 1.4;
+  margin: 2px 0 6px;
+  font-weight: 400;
+}
+
+.town-ref-preview {
+  margin-top: 8px;
+  position: relative;
+  display: inline-block;
+}
+
+.town-ref-preview img {
+  max-width: 200px;
+  border-radius: 6px;
+  border: 1px solid #e5e5e0;
+  display: block;
+}
+
+.town-ref-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: inherit;
 }
