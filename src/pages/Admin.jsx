@@ -4,10 +4,11 @@ import { getAllOpportunities, deleteOpportunity, updateOpportunity } from '../se
 import { getAllVisions, deleteVision, updateVision } from '../services/visions';
 import { getAllCelebrations, deleteCelebration, updateCelebration } from '../services/celebrations';
 import { getAllComments, deleteComment } from '../services/social';
+import { getSettings, updateSettings } from '../services/settings';
 import { useAuth } from '../contexts/AuthContext';
 import './Admin.css';
 
-const TABS = ['Users', 'Opportunities', 'Visions', 'Local Beauty', 'Comments'];
+const TABS = ['Users', 'Opportunities', 'Visions', 'Local Beauty', 'Comments', 'Settings'];
 
 export default function Admin() {
   const { user: currentUser } = useAuth();
@@ -43,6 +44,7 @@ export default function Admin() {
         {tab === 'Visions' && <ItemsTable type="vision" onRefresh={refresh} />}
         {tab === 'Local Beauty' && <ItemsTable type="celebration" onRefresh={refresh} />}
         {tab === 'Comments' && <CommentsTable onRefresh={refresh} />}
+        {tab === 'Settings' && <SettingsPanel />}
       </div>
     </div>
   );
@@ -255,6 +257,67 @@ function CommentsTable({ onRefresh }) {
           )}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+const IMAGE_PROVIDERS = [
+  { value: 'openai', label: 'OpenAI (GPT Image)', description: 'Uses gpt-image-1 via the OpenAI API. Requires OPENAI_API_KEY in .env.' },
+  { value: 'gemini', label: 'Google Gemini (Nano Banana)', description: 'Uses Gemini 2.5 Flash Image via the Google AI API. Requires GEMINI_API_KEY in .env.' },
+];
+
+function SettingsPanel() {
+  const settings = getSettings();
+  const [provider, setProvider] = useState(settings.imageProvider);
+  const [saved, setSaved] = useState(false);
+
+  function handleSave() {
+    updateSettings({ imageProvider: provider });
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  const current = IMAGE_PROVIDERS.find((p) => p.value === provider);
+
+  return (
+    <div className="admin-settings">
+      <div className="admin-settings-section">
+        <h3 className="admin-settings-heading">Image Generation Model</h3>
+        <p className="admin-settings-desc">
+          Choose which AI provider to use for generating vision images.
+        </p>
+
+        <div className="admin-settings-options">
+          {IMAGE_PROVIDERS.map((p) => (
+            <label key={p.value} className={`admin-settings-option ${provider === p.value ? 'admin-settings-option--selected' : ''}`}>
+              <input
+                type="radio"
+                name="imageProvider"
+                value={p.value}
+                checked={provider === p.value}
+                onChange={() => setProvider(p.value)}
+              />
+              <div>
+                <span className="admin-settings-option-label">{p.label}</span>
+                <span className="admin-settings-option-desc">{p.description}</span>
+              </div>
+            </label>
+          ))}
+        </div>
+
+        {current && (
+          <p className="admin-settings-note">
+            Make sure <code>{current.value === 'gemini' ? 'GEMINI_API_KEY' : 'OPENAI_API_KEY'}</code> is set in your <code>.env</code> file.
+          </p>
+        )}
+
+        <div className="admin-settings-actions">
+          <button className="admin-btn admin-btn--save" onClick={handleSave}>
+            Save
+          </button>
+          {saved && <span className="admin-settings-saved">Saved</span>}
+        </div>
+      </div>
     </div>
   );
 }
