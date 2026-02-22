@@ -6,6 +6,37 @@
   background: #fafaf8;
 }
 
+/* ── Opener ── */
+
+.home-opener {
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 100px 32px;
+}
+
+.home-opener-title {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 4.2rem;
+  font-weight: 600;
+  margin: 0 0 28px;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  max-width: 800px;
+}
+
+.home-opener-body {
+  max-width: 680px;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.7;
+  margin: 0;
+}
+
 /* ── Hero with background image ── */
 
 .home-hero {
@@ -132,32 +163,6 @@
   color: #fff;
 }
 
-/* ── Manifesto ── */
-
-.home-manifesto {
-  width: 100%;
-  max-width: 640px;
-  text-align: center;
-  padding: 80px 24px 0;
-}
-
-.home-manifesto-title {
-  font-family: 'EB Garamond', Georgia, serif;
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 20px;
-  letter-spacing: -0.01em;
-  line-height: 1.25;
-}
-
-.home-manifesto-body {
-  font-size: 1.05rem;
-  color: #555;
-  line-height: 1.7;
-  margin: 0;
-}
-
 /* ── Three ways to help ── */
 
 .home-ways {
@@ -169,12 +174,13 @@
 
 .home-ways-title {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1.6rem;
-  font-weight: 500;
+  font-size: 2.2rem;
+  font-weight: 600;
   color: #1a1a1a;
   margin: 0;
-  padding-top: 64px;
+  padding-top: 80px;
   text-align: center;
+  letter-spacing: -0.01em;
 }
 
 /* ── Features ── */
@@ -182,35 +188,38 @@
 .home-features {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  max-width: 840px;
-  padding: 32px 24px 80px;
+  gap: 40px;
+  max-width: 1080px;
+  padding: 40px 40px 96px;
   width: 100%;
 }
 
 .home-feature {
   text-align: center;
-  padding: 32px 24px;
+  padding: 40px 28px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
 }
 
 .home-feature h3 {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 1.25rem;
-  font-weight: 500;
-  margin: 16px 0 8px;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 20px 0 10px;
   color: #1a1a1a;
 }
 
 .home-feature p {
-  font-size: 0.9rem;
-  color: #666;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.6;
   margin: 0;
 }
 
 .home-feature-icon {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   margin: 0 auto;
 }
@@ -231,27 +240,27 @@
 
 .home-commons {
   width: 100%;
-  background: #1a1a1a;
+  background: #2D6A4F;
   color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 80px 24px;
+  padding: 96px 40px;
 }
 
 .home-commons-title {
   font-family: 'EB Garamond', Georgia, serif;
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: 600;
-  margin: 0 0 20px;
+  margin: 0 0 24px;
   letter-spacing: -0.01em;
   text-align: center;
 }
 
 .home-commons-body {
-  max-width: 580px;
-  font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.8);
+  max-width: 680px;
+  font-size: 1.15rem;
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1.7;
   margin: 0;
   text-align: center;
@@ -303,29 +312,34 @@
     padding: 14px 24px;
   }
 
-  .home-manifesto {
-    padding: 56px 20px 0;
+  .home-opener {
+    padding: 64px 20px;
   }
 
-  .home-manifesto-title {
-    font-size: 1.6rem;
+  .home-opener-title {
+    font-size: 2.6rem;
+  }
+
+  .home-opener-body {
+    font-size: 1.05rem;
   }
 
   .home-ways-title {
-    padding-top: 48px;
+    padding-top: 56px;
+    font-size: 1.8rem;
   }
 
   .home-features {
     grid-template-columns: 1fr;
-    gap: 16px;
-    padding: 24px 16px 48px;
+    gap: 20px;
+    padding: 28px 20px 56px;
   }
 
   .home-commons {
-    padding: 56px 20px;
+    padding: 64px 20px;
   }
 
   .home-commons-title {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 }
