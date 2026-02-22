@@ -116,11 +116,11 @@ export default function Town() {
       return;
     }
     if (type === 'celebrate') {
-      navigate(`/town/${slug}/celebrate/submit`, { state: { town } });
+      navigate(`/town/${slug}/celebrate/submit`, { state: { town, pin: coords } });
       return;
     }
     setJourney(type);
-    setStep('place');
+    setStep('form');
     setPin(coords);
   }
 
