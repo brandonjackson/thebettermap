@@ -10,9 +10,9 @@ const TYPE_LABELS = {
 };
 
 const TYPE_COLORS = {
-  opportunity: '#C45B4A',
-  vision: '#5B7FC4',
-  celebration: '#2D6A4F',
+  opportunity: '#CC0C83',
+  vision: '#00A4F2',
+  celebration: '#0E602F',
 };
 
 function getThumbnail(item) {

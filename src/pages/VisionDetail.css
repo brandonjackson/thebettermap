@@ -19,7 +19,7 @@
   width: 24px;
   height: 24px;
   border: 3px solid #e5e5e0;
-  border-top-color: #5B7FC4;
+  border-top-color: #00A4F2;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   flex-shrink: 0;
@@ -39,16 +39,16 @@
 
 .vision-error p {
   margin: 0 0 8px;
-  color: #C45B4A;
+  color: #CC0C83;
   font-size: 0.9rem;
 }
 
 .vision-retry-btn {
   padding: 6px 14px;
   background: #fff;
-  border: 1px solid #C45B4A;
+  border: 1px solid #CC0C83;
   border-radius: 0;
-  color: #C45B4A;
+  color: #CC0C83;
   font-size: 0.8rem;
   cursor: pointer;
   font-family: inherit;
@@ -79,11 +79,11 @@
 }
 
 .vision-image:hover {
-  border-color: #5B7FC4;
+  border-color: #00A4F2;
 }
 
 .vision-image--selected {
-  border-color: #5B7FC4;
+  border-color: #00A4F2;
 }
 
 .vision-select-btn {
@@ -104,14 +104,14 @@
 
 .vision-select-btn:hover {
   background: #fff;
-  border-color: #5B7FC4;
-  color: #5B7FC4;
+  border-color: #00A4F2;
+  color: #00A4F2;
 }
 
 .vision-select-btn--active {
-  background: #5B7FC4;
+  background: #00A4F2;
   color: #fff;
-  border-color: #5B7FC4;
+  border-color: #00A4F2;
 }
 
 .vision-revised {
@@ -132,9 +132,9 @@
   display: inline-block;
   padding: 10px 20px;
   background: #fff;
-  border: 1px solid #5B7FC4;
+  border: 1px solid #00A4F2;
   border-radius: 0;
-  color: #5B7FC4;
+  color: #00A4F2;
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
@@ -144,7 +144,7 @@
 }
 
 .vision-regen-btn:hover {
-  background: #5B7FC4;
+  background: #00A4F2;
   color: #fff;
 }
 
@@ -174,7 +174,7 @@
 
 .vision-publish-btn {
   padding: 10px 24px;
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
   border: none;
   border-radius: 0;
@@ -186,7 +186,7 @@
 }
 
 .vision-publish-btn:hover {
-  background: #245A42;
+  background: #0B4D26;
 }
 
 .vision-publish-btn:disabled {
@@ -204,7 +204,7 @@
   display: inline-block;
   padding: 4px 12px;
   background: #E8F5E9;
-  color: #2D6A4F;
+  color: #0E602F;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;

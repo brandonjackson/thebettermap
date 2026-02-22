@@ -19,15 +19,15 @@
 }
 
 .map-marker--opportunity {
-  background: #C45B4A;
+  background: #CC0C83;
 }
 
 .map-marker--vision {
-  background: #5B7FC4;
+  background: #00A4F2;
 }
 
 .map-marker--celebration {
-  background: #2D6A4F;
+  background: #0E602F;
 }
 
 /* Bullseye overlay */
@@ -43,7 +43,7 @@
 .bullseye-ring {
   position: absolute;
   border-radius: 50%;
-  border: 2px solid #2D6A4F;
+  border: 2px solid #0E602F;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -65,7 +65,7 @@
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #2D6A4F;
+  background: #0E602F;
   border-radius: 50%;
   top: 50%;
   left: 50%;

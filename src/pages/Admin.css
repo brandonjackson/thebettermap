@@ -50,7 +50,7 @@
 
 .admin-tab--active {
   color: #1a1a1a;
-  border-bottom-color: #2D6A4F;
+  border-bottom-color: #0E602F;
 }
 
 .admin-content {
@@ -137,23 +137,23 @@
 }
 
 .admin-btn--danger {
-  color: #C45B4A;
+  color: #CC0C83;
   border-color: #e8ccc8;
 }
 
 .admin-btn--danger:hover {
   background: #fef2f0;
-  border-color: #C45B4A;
+  border-color: #CC0C83;
 }
 
 .admin-btn--save {
   color: #fff;
-  background: #2D6A4F;
-  border-color: #2D6A4F;
+  background: #0E602F;
+  border-color: #0E602F;
 }
 
 .admin-btn--save:hover {
-  background: #245A42;
+  background: #0B4D26;
 }
 
 .admin-select {
@@ -168,7 +168,7 @@
 .admin-inline-input {
   width: 100%;
   padding: 6px 8px;
-  border: 1px solid #2D6A4F;
+  border: 1px solid #0E602F;
   border-radius: 0;
   font-size: 0.85rem;
   font-family: inherit;

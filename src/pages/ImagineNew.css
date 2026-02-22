@@ -20,7 +20,7 @@
 .imagine-start-btn {
   display: inline-block;
   padding: 12px 24px;
-  background: #5B7FC4;
+  background: #00A4F2;
   color: #fff;
   border: none;
   border-radius: 0;
@@ -32,7 +32,7 @@
 }
 
 .imagine-start-btn:hover {
-  background: #4A6DB3;
+  background: #0083C2;
 }
 
 .imagine-items {

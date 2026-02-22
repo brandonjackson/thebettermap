@@ -29,14 +29,14 @@
 }
 
 .social-btn--back {
-  border-color: #2D6A4F;
-  color: #2D6A4F;
+  border-color: #0E602F;
+  color: #0E602F;
 }
 
 .social-btn--backed {
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
-  border-color: #2D6A4F;
+  border-color: #0E602F;
 }
 
 .social-btn-icon {
@@ -89,12 +89,12 @@
 }
 
 .social-comment-input:focus {
-  border-color: #2D6A4F;
+  border-color: #0E602F;
 }
 
 .social-comment-submit {
   padding: 8px 16px;
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
   border: none;
   border-radius: 0;
@@ -114,6 +114,6 @@
 }
 
 .social-comment-login a {
-  color: #2D6A4F;
+  color: #0E602F;
   font-weight: 500;
 }
