@@ -48,6 +48,7 @@ export default function Town() {
   // Step within a journey: 'place' | 'form'
   const [step, setStep] = useState(null);
   const [pin, setPin] = useState({ lat: town.lat, lng: town.lng });
+  const [mapFlyTo, setMapFlyTo] = useState(null);
 
   // Form state for "Report an issue"
   const [oppTitle, setOppTitle] = useState('');
@@ -122,6 +123,7 @@ export default function Town() {
     setJourney(type);
     setStep('form');
     setPin(coords);
+    setMapFlyTo({ lng: coords.lng, lat: coords.lat, ts: Date.now() });
   }
 
   function cancelJourney() {
@@ -466,6 +468,7 @@ export default function Town() {
       showBullseye={showBullseye}
       onBullseyeMove={(pos) => setPin(pos)}
       onContextMenuAction={!journey ? handleContextMenuAction : undefined}
+      flyTo={mapFlyTo}
     />
   );
 

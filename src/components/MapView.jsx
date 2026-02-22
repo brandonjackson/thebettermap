@@ -5,7 +5,7 @@ import { MAP_STYLE } from '../config';
 import { loadImage } from '../services/imageStore';
 import './MapView.css';
 
-export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, onMarkerClick, showBullseye = false, onBullseyeMove, onContextMenuAction }) {
+export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, onMarkerClick, showBullseye = false, onBullseyeMove, onContextMenuAction, flyTo }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
   const markersRef = useRef([]);
@@ -90,6 +90,13 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
       mapRef.current = null;
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fly/jump to a new center when flyTo prop changes
+  useEffect(() => {
+    if (flyTo && mapRef.current) {
+      mapRef.current.jumpTo({ center: [flyTo.lng, flyTo.lat] });
+    }
+  }, [flyTo]);
 
   // Fire bullseye position when it first becomes visible
   useEffect(() => {
