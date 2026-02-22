@@ -45,7 +45,7 @@ export default function MaskCanvas({ image, onMaskChange }) {
 
   const exportMask = useCallback(() => {
     const canvas = overlayRef.current;
-    if (!canvas) return;
+    if (!canvas || canvas.width === 0 || canvas.height === 0) return;
 
     const maskCanvas = document.createElement('canvas');
     maskCanvas.width = canvas.width;
@@ -56,21 +56,12 @@ export default function MaskCanvas({ image, onMaskChange }) {
     maskCtx.fillStyle = '#ffffff';
     maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
 
-    // Read overlay pixels
-    const overlayData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
-    const maskData = maskCtx.getImageData(0, 0, maskCanvas.width, maskCanvas.height);
+    // Erase painted areas using compositing — the overlay's non-transparent
+    // pixels (brush strokes) punch transparent holes in the white fill.
+    maskCtx.globalCompositeOperation = 'destination-out';
+    maskCtx.drawImage(canvas, 0, 0);
+    maskCtx.globalCompositeOperation = 'source-over';
 
-    // Where overlay has paint (alpha > 0), make mask transparent
-    for (let i = 0; i < overlayData.data.length; i += 4) {
-      if (overlayData.data[i + 3] > 0) {
-        maskData.data[i] = 0;
-        maskData.data[i + 1] = 0;
-        maskData.data[i + 2] = 0;
-        maskData.data[i + 3] = 0;
-      }
-    }
-
-    maskCtx.putImageData(maskData, 0, 0);
     onMaskChange(maskCanvas.toDataURL('image/png'));
   }, [onMaskChange]);
 
