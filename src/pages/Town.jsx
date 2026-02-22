@@ -5,12 +5,12 @@ import MapView from '../components/MapView';
 import ItemCard from '../components/ItemCard';
 import MaskCanvas from '../components/MaskCanvas';
 import { useAuth } from '../contexts/AuthContext';
-import { getCelebrationsInBounds, createCelebration } from '../services/celebrations';
+import { getCelebrationsInBounds } from '../services/celebrations';
 import { getOpportunitiesInBounds, createOpportunity } from '../services/opportunities';
 import { getVisionsInBounds, createVision } from '../services/visions';
 import { saveImage } from '../services/imageStore';
 import { reverseGeocode } from '../services/postcodes';
-import { OPPORTUNITY_CATEGORIES, CELEBRATION_TAGS, DEFAULT_CENTER } from '../config';
+import { OPPORTUNITY_CATEGORIES, DEFAULT_CENTER } from '../config';
 import './Town.css';
 
 function ArrowIcon({ className }) {
@@ -62,10 +62,7 @@ export default function Town() {
   const [inspirationImages, setInspirationImages] = useState([]);
   const [visionSaving, setVisionSaving] = useState(false);
 
-  // Form state for "Record local beauty"
-  const [celTitle, setCelTitle] = useState('');
-  const [celDescription, setCelDescription] = useState('');
-  const [celTags, setCelTags] = useState({ material: [], era: [], style: [], feeling: [] });
+
 
   const handleMoveEnd = useCallback((b) => {
     setBounds(b);
@@ -104,6 +101,10 @@ export default function Town() {
       navigate('/login', { state: { returnTo: location.pathname } });
       return;
     }
+    if (type === 'celebrate') {
+      navigate(`/town/${slug}/celebrate/submit`, { state: { town } });
+      return;
+    }
     setJourney(type);
     setStep('place');
     setPin({ lat: town.lat, lng: town.lng });
@@ -122,9 +123,6 @@ export default function Town() {
     setMaskImage(null);
     setInspirationImages([]);
     setVisionSaving(false);
-    setCelTitle('');
-    setCelDescription('');
-    setCelTags({ material: [], era: [], style: [], feeling: [] });
   }
 
   function confirmLocation() {
@@ -163,14 +161,6 @@ export default function Town() {
 
   function removeInspirationImage(index) {
     setInspirationImages((prev) => prev.filter((_, i) => i !== index));
-  }
-
-  function toggleCelTag(category, value) {
-    setCelTags((prev) => {
-      const current = prev[category];
-      const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
-      return { ...prev, [category]: next };
-    });
   }
 
   function handleSubmitOpportunity(e) {
@@ -217,25 +207,9 @@ export default function Town() {
     }
   }
 
-  function handleSubmitCelebration(e) {
-    e.preventDefault();
-    if (!celTitle.trim() || !celDescription.trim()) return;
-    const item = createCelebration({
-      townSlug: slug,
-      title: celTitle.trim(),
-      description: celDescription.trim(),
-      tags: celTags,
-      lat: pin.lat,
-      lng: pin.lng,
-    });
-    cancelJourney();
-    navigate(`/town/${slug}/celebrate/${item.id}`);
-  }
-
   const journeyLabels = {
     improve: { title: 'Report an issue', subtitle: 'Move the map to position the bullseye over the location of the issue.' },
     imagine: { title: 'Imagine something new', subtitle: 'Move the map to position the bullseye over the location for your vision.' },
-    celebrate: { title: 'Record local beauty', subtitle: 'Move the map to position the bullseye over the place you want to celebrate.' },
   };
 
   let leftPanel;
@@ -460,64 +434,6 @@ export default function Town() {
 
           <button type="submit" className="form-submit" disabled={!visionTitle.trim() || !visionPrompt.trim() || visionSaving}>
             {visionSaving ? 'Saving\u2026' : 'Save vision'}
-          </button>
-        </form>
-      </div>
-    );
-  } else if (step === 'form' && journey === 'celebrate') {
-    leftPanel = (
-      <div className="town-panel">
-        <button className="back-link" onClick={() => setStep('place')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-          &larr; Move pin
-        </button>
-        <h1 className="town-step-title">Add local beauty</h1>
-        <p className="town-step-instructions">Tell us what makes this place special.</p>
-
-        <form onSubmit={handleSubmitCelebration} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <label className="form-label">
-            Name
-            <input
-              type="text"
-              className="form-input"
-              placeholder="What is this place?"
-              value={celTitle}
-              onChange={(e) => setCelTitle(e.target.value)}
-              required
-            />
-          </label>
-
-          <label className="form-label">
-            What makes it special?
-            <textarea
-              className="form-input form-textarea"
-              placeholder="Describe what you love about this place..."
-              value={celDescription}
-              onChange={(e) => setCelDescription(e.target.value)}
-              rows={4}
-              required
-            />
-          </label>
-
-          {Object.entries(CELEBRATION_TAGS).map(([category, options]) => (
-            <div key={category} className="form-tag-group">
-              <span className="form-tag-label">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-              <div className="form-tags">
-                {options.map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    className={`form-tag ${celTags[category].includes(opt) ? 'form-tag--selected' : ''}`}
-                    onClick={() => toggleCelTag(category, opt)}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-
-          <button type="submit" className="form-submit" disabled={!celTitle.trim() || !celDescription.trim()}>
-            Save
           </button>
         </form>
       </div>
