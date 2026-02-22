@@ -8,6 +8,7 @@ export default function MaskCanvas({ image, onMaskChange }) {
   const lastPos = useRef(null);
   const hasStrokes = useRef(false);
   const brushSizeRef = useRef(brushSize);
+  const siteImgRef = useRef(null);
 
   // Keep brushSizeRef in sync with state (state drives the slider UI,
   // ref is read by native event listeners that can't see React state)
@@ -25,6 +26,7 @@ export default function MaskCanvas({ image, onMaskChange }) {
       canvas.width = img.width;
       canvas.height = img.height;
       hasStrokes.current = false;
+      siteImgRef.current = img;
     };
     img.src = image;
   }, [image]);
@@ -59,12 +61,17 @@ export default function MaskCanvas({ image, onMaskChange }) {
     maskCanvas.height = canvas.height;
     const maskCtx = maskCanvas.getContext('2d');
 
-    // Fill fully opaque white (areas to preserve)
-    maskCtx.fillStyle = '#ffffff';
-    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+    // Draw the site image as the mask base (areas to preserve).
+    // Falls back to white if the image hasn't loaded yet.
+    if (siteImgRef.current) {
+      maskCtx.drawImage(siteImgRef.current, 0, 0, maskCanvas.width, maskCanvas.height);
+    } else {
+      maskCtx.fillStyle = '#ffffff';
+      maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+    }
 
     // Erase painted areas using compositing — the overlay's non-transparent
-    // pixels (brush strokes) punch transparent holes in the white fill.
+    // pixels (brush strokes) punch transparent holes in the site image.
     maskCtx.globalCompositeOperation = 'destination-out';
     maskCtx.drawImage(canvas, 0, 0);
     maskCtx.globalCompositeOperation = 'source-over';
