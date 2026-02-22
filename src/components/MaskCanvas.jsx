@@ -4,9 +4,16 @@ import './MaskCanvas.css';
 export default function MaskCanvas({ image, onMaskChange }) {
   const overlayRef = useRef(null);
   const [brushSize, setBrushSize] = useState(40);
-  const [isDrawing, setIsDrawing] = useState(false);
+  const isDrawingRef = useRef(false);
   const lastPos = useRef(null);
   const hasStrokes = useRef(false);
+  const brushSizeRef = useRef(brushSize);
+
+  // Keep brushSizeRef in sync with state (state drives the slider UI,
+  // ref is read by native event listeners that can't see React state)
+  useEffect(() => {
+    brushSizeRef.current = brushSize;
+  }, [brushSize]);
 
   // Set up canvas dimensions to match image
   useEffect(() => {
@@ -36,12 +43,12 @@ export default function MaskCanvas({ image, onMaskChange }) {
     };
   }, []);
 
-  const scaledBrush = useCallback(() => {
+  const getScaledBrush = useCallback(() => {
     const canvas = overlayRef.current;
-    if (!canvas) return brushSize;
+    if (!canvas) return brushSizeRef.current;
     const rect = canvas.getBoundingClientRect();
-    return brushSize * (canvas.width / rect.width);
-  }, [brushSize]);
+    return brushSizeRef.current * (canvas.width / rect.width);
+  }, []);
 
   const exportMask = useCallback(() => {
     const canvas = overlayRef.current;
@@ -65,9 +72,11 @@ export default function MaskCanvas({ image, onMaskChange }) {
     onMaskChange(maskCanvas.toDataURL('image/png'));
   }, [onMaskChange]);
 
+  // --- Drawing handlers (used by both mouse + touch) ---
+
   const startDrawing = useCallback((e) => {
     e.preventDefault();
-    setIsDrawing(true);
+    isDrawingRef.current = true;
     const pos = getCoords(e);
     lastPos.current = pos;
     hasStrokes.current = true;
@@ -75,18 +84,18 @@ export default function MaskCanvas({ image, onMaskChange }) {
     const ctx = overlayRef.current.getContext('2d');
     ctx.fillStyle = '#5B7FC4';
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, scaledBrush() / 2, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, getScaledBrush() / 2, 0, Math.PI * 2);
     ctx.fill();
-  }, [getCoords, scaledBrush]);
+  }, [getCoords, getScaledBrush]);
 
   const draw = useCallback((e) => {
-    if (!isDrawing) return;
+    if (!isDrawingRef.current) return;
     e.preventDefault();
     const pos = getCoords(e);
     const ctx = overlayRef.current.getContext('2d');
 
     ctx.strokeStyle = '#5B7FC4';
-    ctx.lineWidth = scaledBrush();
+    ctx.lineWidth = getScaledBrush();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
@@ -95,16 +104,16 @@ export default function MaskCanvas({ image, onMaskChange }) {
     ctx.stroke();
 
     lastPos.current = pos;
-  }, [isDrawing, getCoords, scaledBrush]);
+  }, [getCoords, getScaledBrush]);
 
   const stopDrawing = useCallback(() => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
+    if (!isDrawingRef.current) return;
+    isDrawingRef.current = false;
     lastPos.current = null;
     if (hasStrokes.current) {
       exportMask();
     }
-  }, [isDrawing, exportMask]);
+  }, [exportMask]);
 
   const clearMask = useCallback(() => {
     const canvas = overlayRef.current;
@@ -114,6 +123,24 @@ export default function MaskCanvas({ image, onMaskChange }) {
     hasStrokes.current = false;
     onMaskChange(null);
   }, [onMaskChange]);
+
+  // Register touch events with { passive: false } so preventDefault works
+  // (React registers touch handlers as passive by default, which prevents
+  // us from blocking page scrolling while the user draws on the canvas)
+  useEffect(() => {
+    const canvas = overlayRef.current;
+    if (!canvas) return;
+
+    canvas.addEventListener('touchstart', startDrawing, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', startDrawing);
+      canvas.removeEventListener('touchmove', draw);
+      canvas.removeEventListener('touchend', stopDrawing);
+    };
+  }, [startDrawing, draw, stopDrawing]);
 
   if (!image) return null;
 
@@ -146,9 +173,6 @@ export default function MaskCanvas({ image, onMaskChange }) {
           onMouseMove={draw}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
         />
         <button type="button" className="mask-clear-btn" onClick={clearMask}>
           Clear mask
