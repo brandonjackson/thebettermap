@@ -8,6 +8,7 @@ A civic platform for collectively imagining improvements to Britain. Find what n
 
 - Node.js 18+
 - A free [MapTiler](https://cloud.maptiler.com/) API key
+- An [OpenAI](https://platform.openai.com/) API key (for AI image generation)
 
 ### Setup
 
@@ -19,7 +20,16 @@ Create a `.env` file in the project root:
 
 ```
 VITE_MAPTILER_KEY=your_maptiler_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
 ```
+
+#### Image generation
+
+The "Imagine" journey uses OpenAI's `chatgpt-image-latest` model to generate photorealistic images from text prompts. To enable this:
+
+1. Sign up at [platform.openai.com](https://platform.openai.com/) and create an API key.
+2. Add the key to your `.env` file as `OPENAI_API_KEY`.
+3. Ensure your OpenAI account has access to the image generation API and sufficient credits.
 
 ### Run locally
 
