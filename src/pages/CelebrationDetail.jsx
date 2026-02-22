@@ -22,7 +22,7 @@ export default function CelebrationDetail() {
     return (
       <div style={{ padding: 32 }}>
         <p>Not found.</p>
-        <Link to={`/town/${slug}/celebrate`}>Back to local beauty</Link>
+        <Link to={`/town/${slug}`}>Back to {town.name}</Link>
       </div>
     );
   }
@@ -36,7 +36,7 @@ export default function CelebrationDetail() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}/celebrate`} state={{ town }} className="back-link">&larr; Back to local beauty</Link>
+      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
 
       <span className="detail-type detail-type--celebration">Local Beauty</span>
       <h1 className="detail-title">{item.title}</h1>
