@@ -199,8 +199,8 @@ async function generateWithGemini(apiKey, { prompt, siteImage, mask, inspiration
 
   if (siteImage) {
     parts.push({
-      inline_data: {
-        mime_type: dataUrlToMime(siteImage),
+      inlineData: {
+        mimeType: dataUrlToMime(siteImage),
         data: dataUrlToBase64(siteImage),
       },
     });
@@ -208,8 +208,8 @@ async function generateWithGemini(apiKey, { prompt, siteImage, mask, inspiration
 
   if (mask && siteImage) {
     parts.push({
-      inline_data: {
-        mime_type: dataUrlToMime(mask),
+      inlineData: {
+        mimeType: dataUrlToMime(mask),
         data: dataUrlToBase64(mask),
       },
     });
@@ -218,8 +218,8 @@ async function generateWithGemini(apiKey, { prompt, siteImage, mask, inspiration
   if (inspirationImages) {
     inspirationImages.forEach((img) => {
       parts.push({
-        inline_data: {
-          mime_type: dataUrlToMime(img),
+        inlineData: {
+          mimeType: dataUrlToMime(img),
           data: dataUrlToBase64(img),
         },
       });
@@ -261,36 +261,51 @@ async function generateWithGemini(apiKey, { prompt, siteImage, mask, inspiration
   }
 
   // Extract images from Gemini response
+  // The REST API returns camelCase keys (inlineData, mimeType)
   const images = [];
   let revisedPrompt = null;
 
   if (data.candidates) {
     for (const candidate of data.candidates) {
-      if (candidate.content?.parts) {
-        for (const part of candidate.content.parts) {
-          if (part.inline_data) {
-            const mime = part.inline_data.mime_type || 'image/png';
-            images.push(`data:${mime};base64,${part.inline_data.data}`);
-          } else if (part.text && !revisedPrompt) {
-            revisedPrompt = part.text;
-          }
+      const parts = candidate.content?.parts || [];
+      for (const part of parts) {
+        // Handle both camelCase (REST) and snake_case (just in case)
+        const inlineData = part.inlineData || part.inline_data;
+        if (inlineData) {
+          const mime = inlineData.mimeType || inlineData.mime_type || 'image/png';
+          images.push(`data:${mime};base64,${inlineData.data}`);
+        } else if (part.text && !revisedPrompt) {
+          revisedPrompt = part.text;
         }
       }
     }
   }
 
+  // Log the full response structure for debugging (strip base64 image data)
+  if (logDir) {
+    const debugData = JSON.parse(JSON.stringify(data));
+    if (debugData.candidates) {
+      for (const c of debugData.candidates) {
+        for (const p of (c.content?.parts || [])) {
+          const id = p.inlineData || p.inline_data;
+          if (id?.data) id.data = `[base64, ${id.data.length} chars]`;
+        }
+      }
+    }
+    try { logResponse(logDir, { statusCode: response.status, apiResponse: debugData, clientResponse: images.length ? { images: [`[${images.length} images]`], revisedPrompt } : null }); }
+    catch (e) { console.error('[image-gen] Failed to log response:', e); }
+  }
+
   if (images.length === 0) {
-    const err = new Error('Gemini returned no images. The model may have declined the prompt.');
+    // Include whatever text the model returned so the user can see why
+    const modelText = revisedPrompt || (data.candidates?.[0]?.content?.parts?.[0]?.text);
+    const reason = modelText ? `: ${modelText.slice(0, 200)}` : '. The model may have declined the prompt.';
+    const err = new Error(`Gemini returned no images${reason}`);
     err.statusCode = 400;
     throw err;
   }
 
   const clientResponse = { images, revisedPrompt };
-
-  if (logDir) {
-    try { logResponse(logDir, { statusCode: response.status, apiResponse: { ...data, _imagesStripped: true }, clientResponse }); }
-    catch (e) { console.error('[image-gen] Failed to log response:', e); }
-  }
 
   return clientResponse;
 }
