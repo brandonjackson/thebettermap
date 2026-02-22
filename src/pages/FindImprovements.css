@@ -20,7 +20,7 @@
 .find-submit-btn {
   display: inline-block;
   padding: 12px 24px;
-  background: #C45B4A;
+  background: #CC0C83;
   color: #fff;
   border: none;
   border-radius: 0;
@@ -32,7 +32,7 @@
 }
 
 .find-submit-btn:hover {
-  background: #B04A3A;
+  background: #A30A69;
 }
 
 .find-items {

@@ -18,7 +18,7 @@
 }
 
 .home-section--green {
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
 }
 
@@ -67,13 +67,7 @@
 }
 
 .home-hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.35) 100%
-  );
+  display: none;
 }
 
 .home-hero-content {
@@ -93,7 +87,7 @@
 .home-tagline {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 3.8rem;
-  font-weight: 600;
+  font-weight: 400;
   color: #fff;
   margin: 0 0 40px;
   white-space: nowrap;
@@ -120,7 +114,7 @@
 }
 
 .home-input-group:focus-within {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(45, 106, 79, 0.35);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(14, 96, 47, 0.35);
 }
 
 .home-input {
@@ -135,7 +129,7 @@
 
 .home-btn {
   padding: 16px 28px;
-  background: #2D6A4F;
+  background: #0E602F;
   color: #fff;
   border: none;
   font-size: 1rem;
@@ -147,7 +141,7 @@
 }
 
 .home-btn:hover {
-  background: #245A42;
+  background: #0B4D26;
 }
 
 .home-btn:disabled {
@@ -222,15 +216,15 @@
 }
 
 .home-feature-icon--improve {
-  background: #C45B4A;
+  background: #CC0C83;
 }
 
 .home-feature-icon--imagine {
-  background: #5B7FC4;
+  background: #00A4F2;
 }
 
 .home-feature-icon--celebrate {
-  background: #2D6A4F;
+  background: #0E602F;
 }
 
 /* ── Footer ── */
