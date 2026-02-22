@@ -21,14 +21,14 @@ export default function OpportunityDetail() {
     return (
       <div style={{ padding: 32 }}>
         <p>Issue not found.</p>
-        <Link to={`/town/${slug}/improve`}>Back to issues</Link>
+        <Link to={`/town/${slug}`}>Back to {town.name}</Link>
       </div>
     );
   }
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}/improve`} state={{ town }} className="back-link">&larr; Back to issues</Link>
+      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
 
       <span className="detail-type detail-type--opportunity">Improvement</span>
       <h1 className="detail-title">{item.title}</h1>

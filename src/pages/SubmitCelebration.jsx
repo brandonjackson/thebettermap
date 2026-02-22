@@ -73,7 +73,7 @@ export default function SubmitCelebration() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}/celebrate`} state={{ town }} className="back-link">&larr; Back to local beauty</Link>
+      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
       <h1 style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, margin: '0 0 8px' }}>
         Add local beauty
       </h1>

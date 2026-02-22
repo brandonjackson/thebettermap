@@ -92,7 +92,7 @@ export default function VisionDetail() {
     return (
       <div style={{ padding: 32 }}>
         <p>Vision not found.</p>
-        <Link to={`/town/${slug}/imagine`}>Back to visions</Link>
+        <Link to={`/town/${slug}`}>Back to {town.name}</Link>
       </div>
     );
   }
@@ -104,7 +104,7 @@ export default function VisionDetail() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}/imagine`} state={{ town }} className="back-link">&larr; Back to visions</Link>
+      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
 
       {!isPublished && (
         <span className="vision-draft-badge">Draft</span>
