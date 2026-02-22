@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import { createCelebration } from '../services/celebrations';
+import { saveImage } from '../services/imageStore';
 import { CELEBRATION_TAGS, DEFAULT_CENTER } from '../config';
 
 const TOWN_DEFAULTS = {
@@ -19,10 +20,24 @@ export default function SubmitCelebration() {
   const [description, setDescription] = useState('');
   const [tags, setTags] = useState({ material: [], era: [], style: [], feeling: [] });
   const [pin, setPin] = useState({ lat: town.lat, lng: town.lng });
+  const [photoImage, setPhotoImage] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const handleBullseyeMove = useCallback((pos) => {
     setPin(pos);
   }, []);
+
+  function handlePhotoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setPhotoImage(reader.result);
+    reader.readAsDataURL(file);
+  }
+
+  function removePhoto() {
+    setPhotoImage(null);
+  }
 
   function toggleTag(category, value) {
     setTags((prev) => {
@@ -32,20 +47,28 @@ export default function SubmitCelebration() {
     });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
+    if (!title.trim() || !description.trim() || saving) return;
 
-    const item = createCelebration({
-      townSlug: slug,
-      title: title.trim(),
-      description: description.trim(),
-      tags,
-      lat: pin.lat,
-      lng: pin.lng,
-    });
+    setSaving(true);
+    try {
+      const photoRef = photoImage ? await saveImage(photoImage) : null;
 
-    navigate(`/town/${slug}/celebrate/${item.id}`);
+      const item = createCelebration({
+        townSlug: slug,
+        title: title.trim(),
+        description: description.trim(),
+        tags,
+        lat: pin.lat,
+        lng: pin.lng,
+        photoUrl: photoRef,
+      });
+
+      navigate(`/town/${slug}/celebrate/${item.id}`);
+    } catch {
+      setSaving(false);
+    }
   }
 
   const leftPanel = (
@@ -101,8 +124,75 @@ export default function SubmitCelebration() {
           </div>
         ))}
 
-        <button type="submit" className="form-submit" disabled={!title.trim() || !description.trim()}>
-          Save
+        {/* Photo upload */}
+        <div style={{ borderTop: '1px solid #e5e5e0', paddingTop: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4 }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#333' }}>Photo</span>
+            <span style={{ fontWeight: 400, color: '#999', fontSize: '0.8rem' }}>(optional)</span>
+          </div>
+
+          {!photoImage ? (
+            <label style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              padding: '10px 20px',
+              background: '#fff',
+              border: '1px dashed #ccc',
+              fontSize: '0.85rem',
+              color: '#5B7FC4',
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              transition: 'all 0.15s ease',
+            }}>
+              <span>+ Upload photo</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                hidden
+              />
+            </label>
+          ) : (
+            <div>
+              <div style={{ position: 'relative', marginBottom: 8 }}>
+                <img
+                  src={photoImage}
+                  alt="Upload preview"
+                  style={{ width: '100%', maxHeight: 240, objectFit: 'cover', display: 'block', border: '1px solid #e5e5e0' }}
+                />
+                <button
+                  type="button"
+                  onClick={removePhoto}
+                  style={{
+                    position: 'absolute', top: 8, right: 8,
+                    width: 24, height: 24,
+                    background: 'rgba(0,0,0,0.6)', color: '#fff',
+                    border: 'none', borderRadius: '50%',
+                    fontSize: '0.85rem', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0,
+                  }}
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+          )}
+
+          <p style={{ fontSize: '0.75rem', color: '#888', marginTop: 8, lineHeight: 1.4 }}>
+            Need help finding an image? Check out this location on{' '}
+            <a
+              href={`https://www.geograph.org.uk/mapper/combined.php#13/${pin.lat.toFixed(4)}/${pin.lng.toFixed(4)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: '#5B7FC4' }}
+            >
+              Geograph
+            </a>.
+          </p>
+        </div>
+
+        <button type="submit" className="form-submit" disabled={!title.trim() || !description.trim() || saving}>
+          {saving ? 'Saving\u2026' : 'Save'}
         </button>
       </form>
     </div>

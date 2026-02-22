@@ -3,6 +3,7 @@ import { useState } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import SocialBar from '../components/SocialBar';
+import StoredImage from '../components/StoredImage';
 import { getCelebrationById } from '../services/celebrations';
 import { DEFAULT_CENTER } from '../config';
 
@@ -50,7 +51,7 @@ export default function CelebrationDetail() {
 
       {item.photoUrl && (
         <div className="detail-photo">
-          <img src={item.photoUrl} alt={item.title} />
+          <StoredImage src={item.photoUrl} alt={item.title} />
         </div>
       )}
 
