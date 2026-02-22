@@ -1,6 +1,18 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 
+function dataUrlToBlob(dataUrl) {
+  const [header, base64Data] = dataUrl.split(',');
+  const mime = header.match(/data:([^;]+)/)?.[1] || 'image/png';
+  const buffer = Buffer.from(base64Data, 'base64');
+  return new Blob([buffer], { type: mime });
+}
+
+function mimeToExt(mime) {
+  const map = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/webp': '.webp', 'image/gif': '.gif' };
+  return map[mime] || '.png';
+}
+
 function imageGenerationPlugin(env) {
   return {
     name: 'image-generation-api',
@@ -24,9 +36,9 @@ function imageGenerationPlugin(env) {
         let body = '';
         for await (const chunk of req) body += chunk;
 
-        let prompt;
+        let prompt, siteImage, mask, inspirationImages;
         try {
-          ({ prompt } = JSON.parse(body));
+          ({ prompt, siteImage, mask, inspirationImages } = JSON.parse(body));
         } catch {
           res.statusCode = 400;
           res.setHeader('Content-Type', 'application/json');
@@ -35,19 +47,58 @@ function imageGenerationPlugin(env) {
         }
 
         try {
-          const response = await fetch('https://api.openai.com/v1/images/generations', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${apiKey}`,
-            },
-            body: JSON.stringify({
-              model: 'chatgpt-image-latest',
-              prompt: prompt,
-              n: 1,
-              size: '1024x1024',
-            }),
-          });
+          const hasImages = siteImage || (inspirationImages && inspirationImages.length > 0);
+
+          let response;
+
+          if (hasImages) {
+            // Use the edits endpoint with multipart form data
+            const formData = new FormData();
+            formData.append('model', 'gpt-image-1');
+            formData.append('prompt', prompt);
+            formData.append('n', '1');
+            formData.append('size', '1024x1024');
+
+            if (siteImage) {
+              const blob = dataUrlToBlob(siteImage);
+              formData.append('image[]', blob, `site${mimeToExt(blob.type)}`);
+            }
+
+            if (mask && siteImage) {
+              const maskBlob = dataUrlToBlob(mask);
+              formData.append('mask', maskBlob, 'mask.png');
+            }
+
+            if (inspirationImages) {
+              inspirationImages.forEach((img, i) => {
+                const blob = dataUrlToBlob(img);
+                formData.append('image[]', blob, `inspiration_${i}${mimeToExt(blob.type)}`);
+              });
+            }
+
+            response = await fetch('https://api.openai.com/v1/images/edits', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${apiKey}`,
+              },
+              body: formData,
+            });
+          } else {
+            // Text-only: use the generations endpoint
+            response = await fetch('https://api.openai.com/v1/images/generations', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`,
+              },
+              body: JSON.stringify({
+                model: 'gpt-image-1',
+                prompt: prompt,
+                n: 1,
+                size: '1024x1024',
+              }),
+            });
+          }
 
           const data = await response.json();
 

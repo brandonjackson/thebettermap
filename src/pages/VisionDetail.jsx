@@ -5,7 +5,7 @@ import MapView from '../components/MapView';
 import SocialBar from '../components/SocialBar';
 import { getVisionById, updateVision } from '../services/visions';
 import { generateImage } from '../services/imageGeneration';
-import { saveImage } from '../services/imageStore';
+import { saveImage, loadImage } from '../services/imageStore';
 import StoredImage from '../components/StoredImage';
 import { DEFAULT_CENTER } from '../config';
 import './VisionDetail.css';
@@ -41,7 +41,18 @@ export default function VisionDetail() {
     const fullPrompt = `Photorealistic photograph: ${locationPrefix}${item.prompt}. The output should be photorealistic.`;
 
     try {
-      const result = await generateImage(fullPrompt);
+      // Load images from IndexedDB if they exist
+      const siteImg = item.siteImage ? await loadImage(item.siteImage) : null;
+      const maskImg = item.maskImage ? await loadImage(item.maskImage) : null;
+      const inspImgs = item.inspirationImages?.length
+        ? await Promise.all(item.inspirationImages.map(loadImage))
+        : [];
+
+      const result = await generateImage(fullPrompt, {
+        siteImage: siteImg,
+        mask: maskImg,
+        inspirationImages: inspImgs.filter(Boolean),
+      });
       const refs = await Promise.all(result.images.map(saveImage));
       const updated = updateVision(item.id, {
         generatedImages: [...item.generatedImages, ...refs],
@@ -106,7 +117,26 @@ export default function VisionDetail() {
         <p>{item.prompt}</p>
       </div>
 
-      {item.referenceImage && (
+      {item.siteImage && (
+        <div className="vision-reference">
+          <h3 className="vision-reference-label">Site photo</h3>
+          <StoredImage src={item.siteImage} alt="Site" className="vision-reference-img" />
+        </div>
+      )}
+
+      {item.inspirationImages?.length > 0 && (
+        <div className="vision-reference">
+          <h3 className="vision-reference-label">Inspiration images</h3>
+          <div className="vision-inspiration-row">
+            {item.inspirationImages.map((ref, i) => (
+              <StoredImage key={i} src={ref} alt={`Inspiration ${i + 1}`} className="vision-inspiration-thumb" />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Backward compat: show old referenceImage if present */}
+      {item.referenceImage && !item.siteImage && (
         <div className="vision-reference">
           <h3 className="vision-reference-label">Reference image</h3>
           <img src={item.referenceImage} alt="Reference" className="vision-reference-img" />
