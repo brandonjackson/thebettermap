@@ -32,30 +32,31 @@ export default function Admin() {
 
   return (
     <div className="admin" key={refreshKey}>
-      <div className="admin-header">
-        <h1 className="admin-title">Admin Console</h1>
-        <p className="admin-subtitle">Manage users, content, and comments.</p>
-      </div>
-
-      <div className="admin-tabs">
+      <nav className="admin-nav">
+        <div className="admin-nav-header">
+          <h1 className="admin-title">Admin Console</h1>
+          <p className="admin-subtitle">Manage users, content, and comments.</p>
+        </div>
         {TABS.map((t) => (
           <button
             key={t}
-            className={`admin-tab ${tab === t ? 'admin-tab--active' : ''}`}
+            className={`admin-nav-item ${tab === t ? 'admin-nav-item--active' : ''}`}
             onClick={() => setTab(t)}
           >
             {t}
           </button>
         ))}
-      </div>
+      </nav>
 
-      <div className="admin-content">
-        {tab === 'Users' && <UsersTable currentUserId={currentUser.id} onRefresh={refresh} />}
-        {tab === 'Opportunities' && <ItemsTable type="opportunity" onRefresh={refresh} />}
-        {tab === 'Visions' && <ItemsTable type="vision" onRefresh={refresh} />}
-        {tab === 'Local Beauty' && <ItemsTable type="celebration" onRefresh={refresh} />}
-        {tab === 'Comments' && <CommentsTable onRefresh={refresh} />}
-        {tab === 'Settings' && <SettingsPanel />}
+      <div className="admin-main">
+        <div className="admin-content">
+          {tab === 'Users' && <UsersTable currentUserId={currentUser.id} onRefresh={refresh} />}
+          {tab === 'Opportunities' && <ItemsTable type="opportunity" onRefresh={refresh} />}
+          {tab === 'Visions' && <ItemsTable type="vision" onRefresh={refresh} />}
+          {tab === 'Local Beauty' && <ItemsTable type="celebration" onRefresh={refresh} />}
+          {tab === 'Comments' && <CommentsTable onRefresh={refresh} />}
+          {tab === 'Settings' && <SettingsPanel />}
+        </div>
       </div>
     </div>
   );
