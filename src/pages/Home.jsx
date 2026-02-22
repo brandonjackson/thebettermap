@@ -41,21 +41,12 @@ export default function Home() {
 
   return (
     <div className="home">
-      <div className="home-opener">
-        <h1 className="home-opener-title">Dream it. Share it. Sorted.</h1>
-        <p className="home-opener-body">
-          We have endless ways to object to things. Almost no way to say what we actually want.
-          Progress Map is here to solve Britain's collective imagination problem — a shared canvas
-          for picturing better, street by street, and rallying people around that vision.
-        </p>
-      </div>
-
       <div className="home-hero">
         <div className="home-hero-overlay" />
         <div className="home-hero-content">
-          <h2 className="home-tagline">
+          <h1 className="home-tagline">
             A shared map for a better Britain.
-          </h2>
+          </h1>
 
           <form className="home-form" onSubmit={handleSubmit}>
             <div className="home-input-group">
@@ -78,6 +69,15 @@ export default function Home() {
             Or explore Stoke Newington, London
           </button>
         </div>
+      </div>
+
+      <div className="home-opener">
+        <h2 className="home-opener-title">Dream it. Share it. Sorted.</h2>
+        <p className="home-opener-body">
+          We have endless ways to object to things. Almost no way to say what we actually want.
+          Progress Map is here to solve Britain's collective imagination problem — a shared canvas
+          for picturing better, street by street, and rallying people around that vision.
+        </p>
       </div>
 
       <div className="home-ways">
