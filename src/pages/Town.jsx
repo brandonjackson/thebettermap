@@ -1,5 +1,5 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import ItemCard from '../components/ItemCard';
@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getCelebrationsInBounds, createCelebration } from '../services/celebrations';
 import { getOpportunitiesInBounds, createOpportunity } from '../services/opportunities';
 import { getVisionsInBounds, createVision } from '../services/visions';
+import { reverseGeocode } from '../services/postcodes';
 import { OPPORTUNITY_CATEGORIES, CELEBRATION_TAGS, DEFAULT_CENTER } from '../config';
 import './Town.css';
 
@@ -23,6 +24,14 @@ export default function Town() {
 
   const [bounds, setBounds] = useState(null);
   const [activeTab, setActiveTab] = useState(null);
+  const [locationName, setLocationName] = useState(town.name);
+  const debounceRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+  }, []);
 
   // Journey state: null = hub view, 'improve' | 'imagine' | 'celebrate'
   const [journey, setJourney] = useState(null);
@@ -47,6 +56,11 @@ export default function Town() {
 
   const handleMoveEnd = useCallback((b) => {
     setBounds(b);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const name = await reverseGeocode(b.center[0], b.center[1]);
+      if (name) setLocationName(name);
+    }, 300);
   }, []);
 
   const items = useMemo(() => {
@@ -165,7 +179,7 @@ export default function Town() {
     // Hub view
     leftPanel = (
       <div className="town-panel">
-        <h1 className="town-name">{town.name}</h1>
+        <h1 className="town-name">{locationName}</h1>
         <p className="town-subtitle">What do you want to do here?</p>
 
         <div className="town-journeys">
