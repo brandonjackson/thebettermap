@@ -113,7 +113,7 @@
   display: flex;
   gap: 0;
   border: none;
-  border-radius: 999px;
+  border-radius: 0;
   overflow: hidden;
   background: #fff;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
@@ -142,7 +142,7 @@
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  border-radius: 0 999px 999px 0;
+  border-radius: 0;
   transition: background 0.15s ease;
 }
 
@@ -194,7 +194,7 @@
 .home-feature {
   text-align: center;
   padding: 40px 28px;
-  border-radius: 16px;
+  border-radius: 0;
   background: #fff;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
 }
@@ -267,7 +267,7 @@
 
   .home-input-group {
     flex-direction: column;
-    border-radius: 24px;
+    border-radius: 0;
   }
 
   .home-input {
@@ -275,7 +275,7 @@
   }
 
   .home-btn {
-    border-radius: 0 0 24px 24px;
+    border-radius: 0;
     padding: 14px 24px;
   }
 
