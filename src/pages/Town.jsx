@@ -13,6 +13,14 @@ import { reverseGeocode } from '../services/postcodes';
 import { OPPORTUNITY_CATEGORIES, CELEBRATION_TAGS, DEFAULT_CENTER } from '../config';
 import './Town.css';
 
+function ArrowIcon({ className }) {
+  return (
+    <svg className={className} viewBox="0 0 51 30" fill="none">
+      <path d="M37.3171 0L34.8293 2.5L46.0244 13.75H0V16.5849H46.0244L34.8293 27.5L37.3171 30L51 16.25V13.75L37.3171 0Z" fill="currentColor" />
+    </svg>
+  );
+}
+
 const TOWN_DEFAULTS = {
   'stoke-newington': { name: 'Stoke Newington', lat: 51.5633, lng: -0.0796 },
 };
@@ -236,21 +244,21 @@ export default function Town() {
               <h2>Find something to fix</h2>
               <p>Spot issues and opportunities for improvement</p>
             </div>
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
+            <ArrowIcon className="town-journey-arrow" />
           </button>
           <button onClick={() => startJourney('imagine')} className="town-journey town-journey--imagine">
             <div>
               <h2>Imagine something new</h2>
               <p>Envision what this place could become</p>
             </div>
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
+            <ArrowIcon className="town-journey-arrow" />
           </button>
           <button onClick={() => startJourney('celebrate')} className="town-journey town-journey--celebrate">
             <div>
               <h2>Record local beauty</h2>
               <p>Map the places that make this area special</p>
             </div>
-            <svg className="town-journey-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter"><line x1="4" y1="12" x2="20" y2="12" /><polyline points="14 6 20 12 14 18" /></svg>
+            <ArrowIcon className="town-journey-arrow" />
           </button>
         </div>
 
