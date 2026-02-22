@@ -53,6 +53,18 @@
   margin-left: auto;
 }
 
+.town-journey--improve .town-journey-arrow {
+  color: #CC0C83;
+}
+
+.town-journey--imagine .town-journey-arrow {
+  color: #00A4F2;
+}
+
+.town-journey--celebrate .town-journey-arrow {
+  color: #92C072;
+}
+
 .town-journey h2 {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 1.2rem;
