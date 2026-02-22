@@ -68,7 +68,7 @@ export default function SocialBar({ item, townSlug, onUpdate }) {
             <div key={c.id} className="social-comment">
               <span className="social-comment-author">{c.author}</span>
               <p className="social-comment-text">{c.text}</p>
-              <span className="social-comment-date">{new Date(c.createdAt).toLocaleDateString()}</span>
+              <span className="social-comment-date">{new Date(c.createdAt).toLocaleString()}</span>
             </div>
           ))}
           {isLoggedIn ? (

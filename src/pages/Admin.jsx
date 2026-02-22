@@ -1,12 +1,23 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getAllUsers, updateUserRole, deleteUser } from '../services/auth';
-import { getAllOpportunities, deleteOpportunity, updateOpportunity } from '../services/opportunities';
-import { getAllVisions, deleteVision, updateVision } from '../services/visions';
-import { getAllCelebrations, deleteCelebration, updateCelebration } from '../services/celebrations';
+import { getAllOpportunities, deleteOpportunity, updateOpportunity, getOpportunityById } from '../services/opportunities';
+import { getAllVisions, deleteVision, updateVision, getVisionById } from '../services/visions';
+import { getAllCelebrations, deleteCelebration, updateCelebration, getCelebrationById } from '../services/celebrations';
 import { getAllComments, deleteComment } from '../services/social';
 import { getSettings, updateSettings } from '../services/settings';
 import { useAuth } from '../contexts/AuthContext';
 import './Admin.css';
+
+function getItemViewPath(itemType, itemId) {
+  const getById = itemType === 'opportunity' ? getOpportunityById
+    : itemType === 'vision' ? getVisionById
+    : getCelebrationById;
+  const item = getById(itemId);
+  if (!item) return null;
+  const journeyPath = itemType === 'opportunity' ? 'improve' : itemType === 'vision' ? 'imagine' : 'celebrate';
+  return `/town/${item.townSlug}/${journeyPath}/${itemId}`;
+}
 
 const TABS = ['Users', 'Opportunities', 'Visions', 'Local Beauty', 'Comments', 'Settings'];
 
@@ -93,7 +104,7 @@ function UsersTable({ currentUserId, onRefresh }) {
                   <option value="admin">Admin</option>
                 </select>
               </td>
-              <td className="admin-cell--date">{new Date(u.createdAt).toLocaleDateString()}</td>
+              <td className="admin-cell--date">{new Date(u.createdAt).toLocaleString()}</td>
               <td>
                 {u.id !== currentUserId && (
                   <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(u.id)}>Delete</button>
@@ -152,6 +163,7 @@ function ItemsTable({ type, onRefresh }) {
     setEditing(null);
   }
 
+  const journeyPath = type === 'opportunity' ? 'improve' : type === 'vision' ? 'imagine' : 'celebrate';
   const descLabel = type === 'vision' ? 'Prompt' : 'Description';
 
   return (
@@ -189,7 +201,7 @@ function ItemsTable({ type, onRefresh }) {
                   </td>
                   <td>{item.townSlug}</td>
                   <td>{(item.backerIds || []).length}</td>
-                  <td className="admin-cell--date">{new Date(item.createdAt).toLocaleDateString()}</td>
+                  <td className="admin-cell--date">{new Date(item.createdAt).toLocaleString()}</td>
                   <td className="admin-cell--actions">
                     <button className="admin-btn admin-btn--save" onClick={() => saveEdit(item.id)}>Save</button>
                     <button className="admin-btn" onClick={cancelEdit}>Cancel</button>
@@ -201,8 +213,9 @@ function ItemsTable({ type, onRefresh }) {
                   <td className="admin-cell--desc">{(item.description || item.prompt || '').slice(0, 80)}{(item.description || item.prompt || '').length > 80 ? '...' : ''}</td>
                   <td>{item.townSlug}</td>
                   <td>{(item.backerIds || []).length}</td>
-                  <td className="admin-cell--date">{new Date(item.createdAt).toLocaleDateString()}</td>
+                  <td className="admin-cell--date">{new Date(item.createdAt).toLocaleString()}</td>
                   <td className="admin-cell--actions">
+                    <Link className="admin-btn" to={`/town/${item.townSlug}/${journeyPath}/${item.id}`}>View</Link>
                     <button className="admin-btn" onClick={() => startEdit(item)}>Edit</button>
                     <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(item.id)}>Delete</button>
                   </td>
@@ -238,6 +251,7 @@ function CommentsTable({ onRefresh }) {
             <th>Item type</th>
             <th>Date</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -246,14 +260,19 @@ function CommentsTable({ onRefresh }) {
               <td className="admin-cell--name">{c.author}</td>
               <td className="admin-cell--desc">{c.text}</td>
               <td>{c.itemType}</td>
-              <td className="admin-cell--date">{new Date(c.createdAt).toLocaleDateString()}</td>
+              <td className="admin-cell--date">{new Date(c.createdAt).toLocaleString()}</td>
+              <td>
+                {getItemViewPath(c.itemType, c.itemId) && (
+                  <Link className="admin-btn" to={getItemViewPath(c.itemType, c.itemId)}>View</Link>
+                )}
+              </td>
               <td>
                 <button className="admin-btn admin-btn--danger" onClick={() => handleDelete(c.id)}>Delete</button>
               </td>
             </tr>
           ))}
           {comments.length === 0 && (
-            <tr><td colSpan={5} className="admin-empty">No comments yet.</td></tr>
+            <tr><td colSpan={6} className="admin-empty">No comments yet.</td></tr>
           )}
         </tbody>
       </table>
