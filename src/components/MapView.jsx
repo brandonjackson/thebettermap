@@ -93,15 +93,19 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
 
   // Sync zoom prop to map when it changes
   useEffect(() => {
-    if (mapRef.current && zoom != null) {
+    if (mapRef.current && zoom != null && mapRef.current.getZoom() !== zoom) {
       mapRef.current.setZoom(zoom);
     }
   }, [zoom]);
 
-  // Sync center prop to map when it changes
+  // Sync center prop to map when it changes (guard against same-value updates
+  // to avoid moveend → setBounds → re-render → new array ref → infinite loop)
   useEffect(() => {
     if (mapRef.current && center) {
-      mapRef.current.setCenter(center);
+      const curr = mapRef.current.getCenter();
+      if (curr.lng !== center[0] || curr.lat !== center[1]) {
+        mapRef.current.setCenter(center);
+      }
     }
   }, [center]);
 
