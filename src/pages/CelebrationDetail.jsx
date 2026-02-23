@@ -52,6 +52,17 @@ export default function CelebrationDetail() {
       {item.photoUrl && (
         <div className="detail-photo">
           <StoredImage src={item.photoUrl} alt={item.title} />
+          {item.photoCredits && (
+            <p style={{ fontSize: '0.75rem', color: '#888', margin: '4px 0 0', lineHeight: 1.4 }}>
+              {item.photoSourceUrl ? (
+                <a href={item.photoSourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#888' }}>
+                  {item.photoCredits}
+                </a>
+              ) : (
+                item.photoCredits
+              )}
+            </p>
+          )}
         </div>
       )}
 

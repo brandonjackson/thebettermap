@@ -166,6 +166,8 @@ function ItemsTable({ type, onRefresh }) {
 
   const journeyPath = type === 'opportunity' ? 'improve' : type === 'vision' ? 'imagine' : 'celebrate';
   const descLabel = type === 'vision' ? 'Prompt' : 'Description';
+  const isCelebration = type === 'celebration';
+  const colCount = isCelebration ? 8 : 6;
 
   return (
     <div className="admin-table-wrap">
@@ -174,6 +176,8 @@ function ItemsTable({ type, onRefresh }) {
           <tr>
             <th>Title</th>
             <th>{descLabel}</th>
+            {isCelebration && <th>Photo Credits</th>}
+            {isCelebration && <th>Photo URL</th>}
             <th>Town</th>
             <th>Backers</th>
             <th>Created</th>
@@ -200,6 +204,14 @@ function ItemsTable({ type, onRefresh }) {
                       rows={3}
                     />
                   </td>
+                  {isCelebration && <td className="admin-cell--desc">{item.photoCredits || '\u2014'}</td>}
+                  {isCelebration && (
+                    <td className="admin-cell--desc">
+                      {item.photoSourceUrl ? (
+                        <a href={item.photoSourceUrl} target="_blank" rel="noopener noreferrer">{item.photoSourceUrl}</a>
+                      ) : '\u2014'}
+                    </td>
+                  )}
                   <td>{item.townSlug}</td>
                   <td>{(item.backerIds || []).length}</td>
                   <td className="admin-cell--date">{new Date(item.createdAt).toLocaleString()}</td>
@@ -212,6 +224,14 @@ function ItemsTable({ type, onRefresh }) {
                 <>
                   <td className="admin-cell--name">{item.title}</td>
                   <td className="admin-cell--desc">{(item.description || item.prompt || '').slice(0, 80)}{(item.description || item.prompt || '').length > 80 ? '...' : ''}</td>
+                  {isCelebration && <td className="admin-cell--desc">{item.photoCredits || '\u2014'}</td>}
+                  {isCelebration && (
+                    <td className="admin-cell--desc">
+                      {item.photoSourceUrl ? (
+                        <a href={item.photoSourceUrl} target="_blank" rel="noopener noreferrer">{item.photoSourceUrl}</a>
+                      ) : '\u2014'}
+                    </td>
+                  )}
                   <td>{item.townSlug}</td>
                   <td>{(item.backerIds || []).length}</td>
                   <td className="admin-cell--date">{new Date(item.createdAt).toLocaleString()}</td>
@@ -225,7 +245,7 @@ function ItemsTable({ type, onRefresh }) {
             </tr>
           ))}
           {items.length === 0 && (
-            <tr><td colSpan={6} className="admin-empty">No {type === 'opportunity' ? 'opportunities' : type + 's'} yet.</td></tr>
+            <tr><td colSpan={colCount} className="admin-empty">No {type === 'opportunity' ? 'opportunities' : type + 's'} yet.</td></tr>
           )}
         </tbody>
       </table>

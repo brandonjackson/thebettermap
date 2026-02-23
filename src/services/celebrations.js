@@ -14,7 +14,7 @@ export function getCelebrationById(id) {
   return getCollection(KEY).find((c) => c.id === id) || null;
 }
 
-export function createCelebration({ townSlug, title, description, tags, lat, lng, photoUrl }) {
+export function createCelebration({ townSlug, title, description, tags, lat, lng, photoUrl, photoCredits, photoSourceUrl }) {
   const items = getCollection(KEY);
   const item = {
     id: crypto.randomUUID(),
@@ -26,6 +26,8 @@ export function createCelebration({ townSlug, title, description, tags, lat, lng
     lat,
     lng,
     photoUrl: photoUrl || null,
+    photoCredits: photoCredits || null,
+    photoSourceUrl: photoSourceUrl || null,
     backerIds: [],
     createdAt: new Date().toISOString(),
   };
