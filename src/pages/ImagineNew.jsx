@@ -118,7 +118,7 @@ export default function ImagineNew() {
   if (step === 'browse') {
     leftContent = (
       <div className="imagine-panel">
-        <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
+        <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to the map</Link>
         <h1 className="imagine-title">Imagine something new</h1>
         <p className="imagine-subtitle">
           What could {town.name} become? Browse existing visions or create your own.

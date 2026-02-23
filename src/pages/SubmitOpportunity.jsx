@@ -42,7 +42,7 @@ export default function SubmitOpportunity() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
+      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to the map</Link>
       <h1 style={{ fontFamily: "'EB Garamond', Georgia, serif", fontSize: '1.8rem', fontWeight: 600, margin: '0 0 8px' }}>
         Report an issue
       </h1>

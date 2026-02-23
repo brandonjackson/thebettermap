@@ -31,6 +31,7 @@ export default function Town() {
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
   const town = location.state?.town || TOWN_DEFAULTS[slug] || { name: slug, lat: DEFAULT_CENTER[1], lng: DEFAULT_CENTER[0] };
+  const mapCenter = location.state?.mapCenter || { lat: town.lat, lng: town.lng };
 
   const [bounds, setBounds] = useState(null);
   const [activeTab, setActiveTab] = useState(null);
@@ -460,7 +461,7 @@ export default function Town() {
 
   const rightPanel = (
     <MapView
-      center={[town.lng, town.lat]}
+      center={[mapCenter.lng, mapCenter.lat]}
       zoom={14}
       markers={journey ? [] : markers}
       onMoveEnd={handleMoveEnd}
