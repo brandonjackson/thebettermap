@@ -323,26 +323,35 @@ async function scrapeGeograph(url) {
   }
   const html = await response.text();
 
-  // Extract the main photo image URL from the img with id="mainphoto" or inside div#mainphoto
-  const imgMatch = html.match(/id="mainphoto"[^>]*src="([^"]+)"/);
-  if (!imgMatch) {
-    throw new Error('Could not find main photo on Geograph page');
-  }
-  const imageUrl = imgMatch[1];
-
-  // Extract photographer name from JSON-LD structured data
+  // Extract image URL and photographer from JSON-LD structured data (preferred)
+  let imageUrl = null;
   let photographer = null;
-  const jsonLdMatch = html.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/);
-  if (jsonLdMatch) {
+  const jsonLdBlocks = html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g);
+  for (const m of jsonLdBlocks) {
     try {
-      const jsonLd = JSON.parse(jsonLdMatch[1]);
-      photographer = jsonLd.creator?.name || jsonLd.creditText || null;
+      const jsonLd = JSON.parse(m[1]);
+      if (jsonLd['@type'] === 'ImageObject') {
+        imageUrl = imageUrl || jsonLd.contentUrl || null;
+        photographer = photographer || jsonLd.creator?.name || jsonLd.creditText || null;
+      }
     } catch {
-      // Fall back to HTML parsing
+      // skip malformed JSON-LD blocks
     }
   }
 
-  // Fallback: extract from copyright text in page
+  // Fallback: extract image from div#mainphoto > img
+  if (!imageUrl) {
+    const mainPhotoMatch = html.match(/id="mainphoto"[\s\S]*?<img[^>]*src="([^"]+)"/);
+    if (mainPhotoMatch) {
+      imageUrl = mainPhotoMatch[1];
+    }
+  }
+
+  if (!imageUrl) {
+    throw new Error('Could not find main photo on Geograph page');
+  }
+
+  // Fallback: extract photographer from copyright text in page
   if (!photographer) {
     const copyrightMatch = html.match(/©\s*Copyright\s+<a[^>]*>([^<]+)<\/a>/i)
       || html.match(/©\s*Copyright\s+([^,<]+)/i);
