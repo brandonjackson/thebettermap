@@ -97,7 +97,7 @@ export default function VisionDetail() {
     return (
       <div style={{ padding: 32 }}>
         <p>Vision not found.</p>
-        <Link to={`/town/${slug}`}>Back to {town.name}</Link>
+        <Link to={`/town/${slug}`}>Back to the map</Link>
       </div>
     );
   }
@@ -116,7 +116,7 @@ export default function VisionDetail() {
 
   const leftPanel = (
     <div style={{ maxWidth: 480 }}>
-      <Link to={`/town/${slug}`} state={{ town }} className="back-link">&larr; Back to {town.name}</Link>
+      <Link to={`/town/${slug}`} state={{ town, mapCenter: { lat: item.lat, lng: item.lng } }} className="back-link">&larr; Back to the map</Link>
 
       {!isPublished && (
         <span className="vision-draft-badge">Draft</span>
