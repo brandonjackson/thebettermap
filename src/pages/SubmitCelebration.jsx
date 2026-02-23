@@ -65,6 +65,9 @@ export default function SubmitCelebration() {
       setPhotoImage(result.imageDataUrl);
       setPhotoCredits(result.credits);
       setPhotoSourceUrl(result.sourceUrl);
+      if (result.title && !title.trim()) {
+        setTitle(result.title);
+      }
     } catch (err) {
       setGeographError(err.message);
     } finally {
@@ -117,50 +120,8 @@ export default function SubmitCelebration() {
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <label className="form-label">
-          Name
-          <input
-            type="text"
-            className="form-input"
-            placeholder="What is this place?"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </label>
-
-        <label className="form-label">
-          What makes it special?
-          <textarea
-            className="form-input form-textarea"
-            placeholder="Describe what you love about this place..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={4}
-            required
-          />
-        </label>
-
-        {Object.entries(CELEBRATION_TAGS).map(([category, options]) => (
-          <div key={category} className="form-tag-group">
-            <span className="form-tag-label">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
-            <div className="form-tags">
-              {options.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  className={`form-tag ${tags[category].includes(opt) ? 'form-tag--selected' : ''}`}
-                  onClick={() => toggleTag(category, opt)}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-
         {/* Photo upload */}
-        <div style={{ borderTop: '1px solid #e5e5e0', paddingTop: 16 }}>
+        <div style={{ paddingBottom: 16, borderBottom: '1px solid #e5e5e0' }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginBottom: 4 }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 500, color: '#333' }}>Photo</span>
             <span style={{ fontWeight: 400, color: '#999', fontSize: '0.8rem' }}>(optional)</span>
@@ -272,6 +233,48 @@ export default function SubmitCelebration() {
             </div>
           )}
         </div>
+
+        <label className="form-label">
+          Name
+          <input
+            type="text"
+            className="form-input"
+            placeholder="What is this place?"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </label>
+
+        <label className="form-label">
+          What makes it special?
+          <textarea
+            className="form-input form-textarea"
+            placeholder="Describe what you love about this place..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={4}
+            required
+          />
+        </label>
+
+        {Object.entries(CELEBRATION_TAGS).map(([category, options]) => (
+          <div key={category} className="form-tag-group">
+            <span className="form-tag-label">{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+            <div className="form-tags">
+              {options.map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  className={`form-tag ${tags[category].includes(opt) ? 'form-tag--selected' : ''}`}
+                  onClick={() => toggleTag(category, opt)}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
 
         <button type="submit" className="form-submit" disabled={!title.trim() || !description.trim() || saving}>
           {saving ? 'Saving\u2026' : 'Save'}
