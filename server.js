@@ -273,6 +273,69 @@ async function generateWithGemini(apiKey, { prompt, siteImage, mask, inspiration
 }
 
 // ---------------------------------------------------------------------------
+// Geograph scraping
+// ---------------------------------------------------------------------------
+
+function isValidGeographPhotoUrl(url) {
+  return /^https?:\/\/(www\.)?geograph\.org\.uk\/photo\/\d+$/.test(url);
+}
+
+async function scrapeGeograph(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Geograph page: ${response.status}`);
+  }
+  const html = await response.text();
+
+  // Extract the main photo image URL from the img with id="mainphoto"
+  const imgMatch = html.match(/id="mainphoto"[^>]*src="([^"]+)"/);
+  if (!imgMatch) {
+    throw new Error('Could not find main photo on Geograph page');
+  }
+  const imageUrl = imgMatch[1];
+
+  // Extract photographer name from JSON-LD structured data
+  let photographer = null;
+  const jsonLdMatch = html.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  if (jsonLdMatch) {
+    try {
+      const jsonLd = JSON.parse(jsonLdMatch[1]);
+      photographer = jsonLd.creator?.name || jsonLd.creditText || null;
+    } catch {
+      // Fall back to HTML parsing
+    }
+  }
+
+  // Fallback: extract from copyright text in page
+  if (!photographer) {
+    const copyrightMatch = html.match(/©\s*Copyright\s+<a[^>]*>([^<]+)<\/a>/i)
+      || html.match(/©\s*Copyright\s+([^,<]+)/i);
+    if (copyrightMatch) {
+      photographer = copyrightMatch[1].trim();
+    }
+  }
+
+  // Download the image
+  const imgResponse = await fetch(imageUrl);
+  if (!imgResponse.ok) {
+    throw new Error(`Failed to download image: ${imgResponse.status}`);
+  }
+  const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
+  const mime = imgResponse.headers.get('content-type') || 'image/jpeg';
+  const base64 = imgBuffer.toString('base64');
+  const dataUrl = `data:${mime};base64,${base64}`;
+
+  return {
+    imageDataUrl: dataUrl,
+    photographer,
+    sourceUrl: url,
+    credits: photographer
+      ? `Copyright ${photographer}, via Geograph under CC-BY-SA licence`
+      : 'Via Geograph under CC-BY-SA licence',
+  };
+}
+
+// ---------------------------------------------------------------------------
 // MIME type map for static file serving
 // ---------------------------------------------------------------------------
 
@@ -363,6 +426,37 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204)
     res.end()
     return
+  }
+
+  // Geograph scraping API
+  if (req.url === '/api/scrape-geograph' || req.url.startsWith('/api/scrape-geograph?')) {
+    if (req.method !== 'POST') {
+      sendJson(res, 405, { error: 'Method not allowed' });
+      return;
+    }
+
+    let parsed;
+    try {
+      const body = await readBody(req);
+      parsed = JSON.parse(body);
+    } catch {
+      sendJson(res, 400, { error: 'Invalid request body' });
+      return;
+    }
+
+    const { url } = parsed;
+    if (!url || !isValidGeographPhotoUrl(url)) {
+      sendJson(res, 400, { error: 'Invalid Geograph URL. Expected format: https://www.geograph.org.uk/photo/1234567' });
+      return;
+    }
+
+    try {
+      const result = await scrapeGeograph(url);
+      sendJson(res, 200, result);
+    } catch (err) {
+      sendJson(res, 500, { error: err.message });
+    }
+    return;
   }
 
   // API route

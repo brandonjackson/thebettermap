@@ -4,6 +4,7 @@ import SplitLayout from '../components/SplitLayout';
 import MapView from '../components/MapView';
 import { createCelebration } from '../services/celebrations';
 import { saveImage } from '../services/imageStore';
+import { isValidGeographPhotoUrl, importFromGeograph } from '../services/geograph';
 import { CELEBRATION_TAGS, DEFAULT_CENTER } from '../config';
 
 const TOWN_DEFAULTS = {
@@ -22,6 +23,11 @@ export default function SubmitCelebration() {
   const initialPin = location.state?.pin || { lat: town.lat, lng: town.lng };
   const [pin, setPin] = useState(initialPin);
   const [photoImage, setPhotoImage] = useState(null);
+  const [photoCredits, setPhotoCredits] = useState(null);
+  const [photoSourceUrl, setPhotoSourceUrl] = useState(null);
+  const [geographUrl, setGeographUrl] = useState('');
+  const [geographLoading, setGeographLoading] = useState(false);
+  const [geographError, setGeographError] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const handleBullseyeMove = useCallback((pos) => {
@@ -38,6 +44,32 @@ export default function SubmitCelebration() {
 
   function removePhoto() {
     setPhotoImage(null);
+    setPhotoCredits(null);
+    setPhotoSourceUrl(null);
+    setGeographUrl('');
+    setGeographError(null);
+  }
+
+  async function handleGeographImport() {
+    const url = geographUrl.trim();
+    if (!url || !isValidGeographPhotoUrl(url)) {
+      setGeographError('Please enter a valid Geograph photo URL (e.g. https://www.geograph.org.uk/photo/1234567)');
+      return;
+    }
+
+    setGeographLoading(true);
+    setGeographError(null);
+
+    try {
+      const result = await importFromGeograph(url);
+      setPhotoImage(result.imageDataUrl);
+      setPhotoCredits(result.credits);
+      setPhotoSourceUrl(result.sourceUrl);
+    } catch (err) {
+      setGeographError(err.message);
+    } finally {
+      setGeographLoading(false);
+    }
   }
 
   function toggleTag(category, value) {
@@ -64,6 +96,8 @@ export default function SubmitCelebration() {
         lat: pin.lat,
         lng: pin.lng,
         photoUrl: photoRef,
+        photoCredits,
+        photoSourceUrl,
       });
 
       navigate(`/town/${slug}/celebrate/${item.id}`);
@@ -133,26 +167,80 @@ export default function SubmitCelebration() {
           </div>
 
           {!photoImage ? (
-            <label style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '10px 20px',
-              background: '#fff',
-              border: '1px dashed #ccc',
-              fontSize: '0.85rem',
-              color: '#5B7FC4',
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              transition: 'all 0.15s ease',
-            }}>
-              <span>+ Upload photo</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handlePhotoUpload}
-                hidden
-              />
-            </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <label style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '10px 20px',
+                background: '#fff',
+                border: '1px dashed #ccc',
+                fontSize: '0.85rem',
+                color: '#5B7FC4',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                transition: 'all 0.15s ease',
+              }}>
+                <span>+ Upload photo</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  hidden
+                />
+              </label>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ flex: 1, height: 1, background: '#e5e5e0' }} />
+                <span style={{ fontSize: '0.75rem', color: '#999' }}>or import from Geograph</span>
+                <div style={{ flex: 1, height: 1, background: '#e5e5e0' }} />
+              </div>
+
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  type="url"
+                  className="form-input"
+                  placeholder="https://www.geograph.org.uk/photo/1234567"
+                  value={geographUrl}
+                  onChange={(e) => { setGeographUrl(e.target.value); setGeographError(null); }}
+                  disabled={geographLoading}
+                  style={{ flex: 1, margin: 0 }}
+                />
+                <button
+                  type="button"
+                  onClick={handleGeographImport}
+                  disabled={geographLoading || !geographUrl.trim()}
+                  style={{
+                    padding: '8px 16px',
+                    background: geographLoading ? '#ccc' : '#5B7FC4',
+                    color: '#fff',
+                    border: 'none',
+                    fontSize: '0.85rem',
+                    cursor: geographLoading ? 'wait' : 'pointer',
+                    fontFamily: 'inherit',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {geographLoading ? 'Importing\u2026' : 'Import'}
+                </button>
+              </div>
+
+              {geographError && (
+                <p style={{ fontSize: '0.8rem', color: '#c44', margin: 0 }}>{geographError}</p>
+              )}
+
+              <p style={{ fontSize: '0.75rem', color: '#888', margin: 0, lineHeight: 1.4 }}>
+                Find a photo on{' '}
+                <a
+                  href={`https://www.geograph.org.uk/mapper/combined.php#15/${pin.lat.toFixed(4)}/${pin.lng.toFixed(4)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#5B7FC4' }}
+                >
+                  Geograph
+                </a>
+                {' '}and paste the photo page URL above. Photos are CC-BY-SA licensed.
+              </p>
+            </div>
           ) : (
             <div>
               <div style={{ position: 'relative', marginBottom: 8 }}>
@@ -176,20 +264,13 @@ export default function SubmitCelebration() {
                   &times;
                 </button>
               </div>
+              {photoCredits && (
+                <p style={{ fontSize: '0.75rem', color: '#888', margin: '0 0 4px', lineHeight: 1.4 }}>
+                  {photoCredits}
+                </p>
+              )}
             </div>
           )}
-
-          <p style={{ fontSize: '0.75rem', color: '#888', marginTop: 8, lineHeight: 1.4 }}>
-            Need help finding an image? Check out this location on{' '}
-            <a
-              href={`https://www.geograph.org.uk/mapper/combined.php#15/${pin.lat.toFixed(4)}/${pin.lng.toFixed(4)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: '#5B7FC4' }}
-            >
-              Geograph
-            </a>.
-          </p>
         </div>
 
         <button type="submit" className="form-submit" disabled={!title.trim() || !description.trim() || saving}>
