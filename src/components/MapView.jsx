@@ -91,6 +91,20 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Sync zoom prop to map when it changes
+  useEffect(() => {
+    if (mapRef.current && zoom != null) {
+      mapRef.current.setZoom(zoom);
+    }
+  }, [zoom]);
+
+  // Sync center prop to map when it changes
+  useEffect(() => {
+    if (mapRef.current && center) {
+      mapRef.current.setCenter(center);
+    }
+  }, [center]);
+
   // Fly/jump to a new center when flyTo prop changes
   useEffect(() => {
     if (flyTo && mapRef.current) {
