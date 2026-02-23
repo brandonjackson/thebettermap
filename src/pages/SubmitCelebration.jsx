@@ -22,6 +22,7 @@ export default function SubmitCelebration() {
   const [tags, setTags] = useState({ material: [], era: [], style: [], feeling: [] });
   const initialPin = location.state?.pin || { lat: town.lat, lng: town.lng };
   const [pin, setPin] = useState(initialPin);
+  const [mapCenter, setMapCenter] = useState(() => ({ lat: initialPin.lat, lng: initialPin.lng }));
   const [photoImage, setPhotoImage] = useState(null);
   const [photoCredits, setPhotoCredits] = useState(null);
   const [photoSourceUrl, setPhotoSourceUrl] = useState(null);
@@ -32,6 +33,10 @@ export default function SubmitCelebration() {
 
   const handleBullseyeMove = useCallback((pos) => {
     setPin(pos);
+  }, []);
+
+  const handleMoveEnd = useCallback((b) => {
+    setMapCenter({ lat: b.center[1], lng: b.center[0] });
   }, []);
 
   function handlePhotoUpload(e) {
@@ -285,10 +290,11 @@ export default function SubmitCelebration() {
 
   const rightPanel = (
     <MapView
-      center={[initialPin.lng, initialPin.lat]}
+      center={[mapCenter.lng, mapCenter.lat]}
       zoom={18}
       showBullseye
       onBullseyeMove={handleBullseyeMove}
+      onMoveEnd={handleMoveEnd}
     />
   );
 
