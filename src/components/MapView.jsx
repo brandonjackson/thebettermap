@@ -12,6 +12,10 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
   const popupRef = useRef(null);
   const [contextMenu, setContextMenu] = useState(null);
 
+  // Track whether the user is actively moving the map (pan/zoom/rotate)
+  // so we never fight with them by programmatically repositioning mid-gesture.
+  const isUserMovingRef = useRef(false);
+
   // Keep callback refs current so event handlers never go stale
   const onMoveEndRef = useRef(onMoveEnd);
   const onMarkerClickRef = useRef(onMarkerClick);
@@ -38,7 +42,13 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
 
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
+    map.on('movestart', () => {
+      isUserMovingRef.current = true;
+      setContextMenu(null);
+    });
+
     map.on('moveend', () => {
+      isUserMovingRef.current = false;
       const bounds = map.getBounds();
       onMoveEndRef.current?.({
         north: bounds.getNorth(),
@@ -79,10 +89,6 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
       setContextMenu(null);
     });
 
-    map.on('movestart', () => {
-      setContextMenu(null);
-    });
-
     mapRef.current = map;
 
     return () => {
@@ -98,16 +104,20 @@ export default function MapView({ center, zoom = 14, markers = [], onMoveEnd, on
     }
   }, [zoom]);
 
-  // Sync center prop to map when it changes (guard against same-value updates
-  // to avoid moveend → setBounds → re-render → new array ref → infinite loop)
+  // Sync center prop to map when it changes.
+  // Use individual values as deps (not the array ref) so the effect only
+  // fires when the actual coordinates change, and skip entirely while the
+  // user is actively panning to avoid fighting their gesture.
+  const centerLng = center?.[0];
+  const centerLat = center?.[1];
   useEffect(() => {
-    if (mapRef.current && center) {
+    if (mapRef.current && centerLng != null && centerLat != null && !isUserMovingRef.current) {
       const curr = mapRef.current.getCenter();
-      if (curr.lng !== center[0] || curr.lat !== center[1]) {
-        mapRef.current.setCenter(center);
+      if (curr.lng !== centerLng || curr.lat !== centerLat) {
+        mapRef.current.setCenter([centerLng, centerLat]);
       }
     }
-  }, [center]);
+  }, [centerLng, centerLat]);
 
   // Fly/jump to a new center when flyTo prop changes
   useEffect(() => {
