@@ -291,6 +291,8 @@ async function scrapeGeograph(url) {
   let imageUrl = null;
   let photographer = null;
   let title = null;
+  let lat = null;
+  let lng = null;
   const jsonLdBlocks = html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g);
   for (const m of jsonLdBlocks) {
     try {
@@ -299,6 +301,10 @@ async function scrapeGeograph(url) {
         imageUrl = imageUrl || jsonLd.contentUrl || null;
         photographer = photographer || jsonLd.creator?.name || jsonLd.creditText || null;
         title = title || jsonLd.name || null;
+        if (jsonLd.contentLocation) {
+          lat = lat ?? (typeof jsonLd.contentLocation.latitude === 'number' ? jsonLd.contentLocation.latitude : null);
+          lng = lng ?? (typeof jsonLd.contentLocation.longitude === 'number' ? jsonLd.contentLocation.longitude : null);
+        }
       }
     } catch {
       // skip malformed JSON-LD blocks
@@ -348,6 +354,8 @@ async function scrapeGeograph(url) {
     imageDataUrl: dataUrl,
     photographer,
     title,
+    lat,
+    lng,
     sourceUrl: url,
     credits: photographer
       ? `Copyright ${photographer}, via Geograph under CC-BY-SA licence`
