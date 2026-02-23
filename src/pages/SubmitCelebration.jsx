@@ -73,6 +73,10 @@ export default function SubmitCelebration() {
       if (result.title && !title.trim()) {
         setTitle(result.title);
       }
+      if (result.lat != null && result.lng != null) {
+        setPin({ lat: result.lat, lng: result.lng });
+        setMapCenter({ lat: result.lat, lng: result.lng });
+      }
     } catch (err) {
       setGeographError(err.message);
     } finally {
