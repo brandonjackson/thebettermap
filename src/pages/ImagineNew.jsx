@@ -275,7 +275,7 @@ export default function ImagineNew() {
   const rightPanel = (
     <MapView
       center={[town.lng, town.lat]}
-      zoom={14}
+      zoom={18}
       markers={step === 'browse' ? existingVisions : []}
       onMoveEnd={handleMoveEnd}
       onMarkerClick={handleMarkerClick}

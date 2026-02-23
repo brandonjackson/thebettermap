@@ -283,7 +283,7 @@ export default function SubmitCelebration() {
   const rightPanel = (
     <MapView
       center={[initialPin.lng, initialPin.lat]}
-      zoom={15}
+      zoom={18}
       showBullseye
       onBullseyeMove={handleBullseyeMove}
     />
