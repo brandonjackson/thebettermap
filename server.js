@@ -287,9 +287,10 @@ async function scrapeGeograph(url) {
   }
   const html = await response.text();
 
-  // Extract image URL and photographer from JSON-LD structured data (preferred)
+  // Extract image URL, photographer and title from JSON-LD structured data (preferred)
   let imageUrl = null;
   let photographer = null;
+  let title = null;
   const jsonLdBlocks = html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g);
   for (const m of jsonLdBlocks) {
     try {
@@ -297,6 +298,7 @@ async function scrapeGeograph(url) {
       if (jsonLd['@type'] === 'ImageObject') {
         imageUrl = imageUrl || jsonLd.contentUrl || null;
         photographer = photographer || jsonLd.creator?.name || jsonLd.creditText || null;
+        title = title || jsonLd.name || null;
       }
     } catch {
       // skip malformed JSON-LD blocks
@@ -313,6 +315,14 @@ async function scrapeGeograph(url) {
 
   if (!imageUrl) {
     throw new Error('Could not find main photo on Geograph page');
+  }
+
+  // Fallback: extract title from <title> tag (everything before the copyright symbol)
+  if (!title) {
+    const titleMatch = html.match(/<title>([^<]*?)(?:\s*©|\s*&copy;)/i);
+    if (titleMatch) {
+      title = titleMatch[1].trim();
+    }
   }
 
   // Fallback: extract photographer from copyright text in page
@@ -337,6 +347,7 @@ async function scrapeGeograph(url) {
   return {
     imageDataUrl: dataUrl,
     photographer,
+    title,
     sourceUrl: url,
     credits: photographer
       ? `Copyright ${photographer}, via Geograph under CC-BY-SA licence`
