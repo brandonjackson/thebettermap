@@ -94,7 +94,7 @@ export default function SubmitOpportunity() {
   const rightPanel = (
     <MapView
       center={[town.lng, town.lat]}
-      zoom={15}
+      zoom={18}
       showBullseye
       onBullseyeMove={handleBullseyeMove}
     />
